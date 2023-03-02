@@ -32,6 +32,7 @@ Field.add(fieldConfigs, 'm',0,fieldConfigs.n-1 ).step(1).onChange( function (val
 Field.add(fieldConfigs, 'n', 3, 20).step(1).onChange( function () {
 	scene.field.setNumOfSides(fieldConfigs.n);
 	Field.__controllers[0].__max=fieldConfigs.n-1;
+	Field.updateDisplay();
 })
 // Field.add(fieldConfigs, 'translateZ', -100,100).step(0.1).onChange(function () {
 // 	cube.transform.translate= [cube.transform.translate[0],cube.transform.translate[1],fieldConfigs.translateZ]
