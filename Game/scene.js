@@ -4,8 +4,8 @@ export class Scene
 {
 	constructor(width, height)
 	{
-		this.field= new Field(2,3)
-		this.primitives = []
+		this.field= new Field(2,3,5)
+		this.primitives = [this.field]
 		
 		//Keeping the view and projection matrices in the scene as they are global properties and apply to all models.
 		this.eyeVector=vec3.create();
@@ -31,6 +31,7 @@ export class Scene
 		if( this.primitives && primitive )
 		{
 			this.primitives.push(primitive)
+			console.log(primitive)
 		}
 	}
 
