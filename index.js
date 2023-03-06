@@ -1,4 +1,4 @@
-import { Cube, WebGLRenderer, Shader } from './lib/threeD.js';
+import { WebGLRenderer, Shader } from './lib/threeD.js';
 import {vertexShaderSrc} from './shaders/vertex.js';
 import {fragmentShaderSrc} from './shaders/fragment.js';
 import {Scene} from './Game/scene.js';
@@ -19,9 +19,7 @@ shader.use();
 
 const fieldConfigs={
 	m: scene.field.numOfPlayers,
-	n: scene.field.numOfSides,
-	// translateZ: 0,
-	// rotateAngle: 0
+	n: scene.field.numOfSides
 }
 const gui = new dat.GUI();
 const Field= gui.addFolder('Field')
@@ -35,13 +33,25 @@ Field.add(fieldConfigs, 'n', 3, 20).step(1).onChange( function () {
 	Field.updateDisplay();
 })
 // Field.add(fieldConfigs, 'translateZ', -100,100).step(0.1).onChange(function () {
-// 	cube.transform.translate= [cube.transform.translate[0],cube.transform.translate[1],fieldConfigs.translateZ]
-// })
-// Field.add(fieldConfigs, 'rotateAngle', -Math.PI,Math.PI).step(0.1).onChange(function () {
-// 	cube.transform.rotationAngle = fieldConfigs.rotateAngle;
-// })
+
 Field.open()
-// scene.add(cube);
+
+document.addEventListener('keydown', (event) =>{
+	scene.processEvent(event);
+})
+// document.addEventListener('mousedown', (event) => {
+// 	console.log(event);
+// 	move=true;
+// })
+// document.addEventListener('mousemove', (event) => {
+// 	if(move){
+// 		console.log(event);
+// 	}
+// })
+// document.addEventListener('mouseup', (event) => {
+// 	console.log(event)
+// 	move=false
+// })
 renderer.setAnimationLoop(animation);
 //Draw loop
 function animation() 

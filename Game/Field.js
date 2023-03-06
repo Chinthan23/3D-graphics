@@ -7,7 +7,7 @@ export class Field {
 
 		this.centerX = 0.0;
 		this.centerY = 0.0;
-		this.centerZ = -10;
+		this.centerZ = -2;
 		this.radius = radius;
 		this.vertexPositions = [];
 		this.angleBetweenTwoVertices = 2 * Math.PI / this.numOfSides;
@@ -16,7 +16,8 @@ export class Field {
 		this.vertexPositions = [];
 		this.updateField();
 		this.transform = new Transform()
-		this.color=[1,1,0,0]
+		this.color=[1,1,0,1];
+		this.type="normal";
 	}
 	updateField(){
 		//reset vertices and calculate new ones.
@@ -45,6 +46,5 @@ export class Field {
 		this.numOfSides = numOfSides;
 		this.changeAngleBetweenVertices();
 		this.updateField();
-
 	}
 }
