@@ -16,8 +16,8 @@ export class Scene
 		//Keeping the view and projection matrices in the scene as they are global properties and apply to all models.
 		this.eyeVector=vec3.create();
 		this.eyeVector2=vec3.create();
-		vec3.set(this.eyeVector,0,0,50)
-		vec3.set(this.eyeVector2,0,-100,0)
+		vec3.set(this.eyeVector,0,0,5)
+		vec3.set(this.eyeVector2,0,-10,0)
 
 		this.upVector=vec3.create();
 		this.upVector2=vec3.create();
@@ -29,8 +29,11 @@ export class Scene
 		vec3.set(this.centerVector,0,0,0);
 		vec3.set(this.centerVector2,0,0,0);
 
-		this.viewMatrix=mat4.create();
-		mat4.lookAt(this.viewMatrix,this.eyeVector,this.centerVector,this.upVector);
+		this.localViewMatrix=mat4.create();
+		this.globalViewMatrix=mat4.create();
+		mat4.lookAt(this.localViewMatrix,this.eyeVector,this.centerVector,this.upVector);
+		mat4.lookAt(this.globalViewMatrix,this.eyeVector2,this.centerVector2,this.upVector2);
+		this.viewMatrix=this.localViewMatrix;
 		// mat4.invert(this.viewMatrix,this.viewMatrix);
 
 		this.near=1e-4;
@@ -56,11 +59,11 @@ export class Scene
 		}
 	}
 	updateViewMatrixOnModeChange(mode){
-		mat4.identity(this.viewMatrix);
-		mode===1? mat4.lookAt(this.viewMatrix,this.eyeVector,this.centerVector,this.upVector) : mat4.lookAt(this.viewMatrix,this.eyeVector2,this.centerVector2,this.upVector2);
+		this.viewMatrix=mode===1? this.localViewMatrix:this.globalViewMatrix;
 		// mat4.invert(this.viewMatrix,this.viewMatrix);
 	}
-	globalTrackball(event){
+	globalTrackball(initialCoordinates,FinalCoordinates){
+		console.log(initialCoordinates,FinalCoordinates);
 
 	}
 	processEvent(event){
