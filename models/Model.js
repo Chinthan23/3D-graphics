@@ -1,7 +1,7 @@
 import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
 import {Transform} from "../lib/transform.js"
-import {cube} from "../models/cube.js";
-import {arrow} from "../models/arrow.js";
+import {cube} from "./cube.js";
+import {arrow} from "./arrow.js";
 
 export class Model{
 	constructor(color,num=1){

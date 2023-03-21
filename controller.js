@@ -14,6 +14,7 @@ export class Controller{
 		this.move=false;
 		this.guiSelect=false;
 		this.trackballSpehereRadius=1;
+		this.initialMouseCoordinates=[0,0,0];
 
 		this.mouse=vec2.create(); //initial mouse coordinates
 		vec2.set(this.mouse,0,0)
@@ -29,24 +30,26 @@ export class Controller{
 		}
 		else if (event.type==='mousedown'){
 			console.log(this.move)
-			if(this.move===true && this.guiSelect===false){
+			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
 				console.log(event);
-				vec2.set(this.mouse,event.x,event.y)
-				vec2.set(this.moveMouse,event.x,event.y)
-				console.log(this.moveMouse);
+				vec2.set(this.mouse,event.x,event.y);
+				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
+				vec2.set(this.moveMouse,event.x,event.y);
+				console.log(this.initialMouseCoordinates);
 			}
 		}
 		else if (event.type==='mousemove'){
-			if(this.move===true && this.guiSelect===false){
+			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
 				vec2.set(this.moveMouse,event.x,event.y)
 				console.log(this.mouse,this.moveMouse);
 				this.rotateCamera3D();
 			}
 		}
 		else if(event.type==='mouseup'){
-			if(this.move===true && this.guiSelect===false){
+			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
 				vec2.set(this.mouse,event.x,event.y)
 				vec2.set(this.moveMouse,event.x,event.y)
+				this.scene.setQuatIdentity();
 				console.log(this.mouse,this.moveMouse);
 			}
 		}
@@ -56,10 +59,10 @@ export class Controller{
 		let normalizedMouseY=(this.screenHeight- 2*mouse[1])/this.screenHeight;
 		
 		//keeping in between -1 to 1
-		normalizedMouseX=normalizedMouseX>1?1:normalizedMouseX;
-		normalizedMouseX=normalizedMouseX<-1?-1:normalizedMouseX;
-		normalizedMouseY=normalizedMouseY>1?1:normalizedMouseY;
-		normalizedMouseY=normalizedMouseY<-1?-1:normalizedMouseY;
+		// normalizedMouseX=normalizedMouseX>1?1:normalizedMouseX;
+		// normalizedMouseX=normalizedMouseX<-1?-1:normalizedMouseX;
+		// normalizedMouseY=normalizedMouseY>1?1:normalizedMouseY;
+		// normalizedMouseY=normalizedMouseY<-1?-1:normalizedMouseY;
 
 		let d=normalizedMouseX*normalizedMouseX + normalizedMouseY*normalizedMouseY;
 		let sphereZ=d<1.0? Math.sqrt(1-d):0.0;
@@ -68,11 +71,11 @@ export class Controller{
 		return [normalizedMouseX, normalizedMouseY,sphereZ]
 	}
 	rotateCamera3D(){
-		if(Math.abs(this.mouse[0] -this.moveMouse[0]) >1.0 || Math.abs(this.mouse[1] -this.moveMouse[1])> 1.0){
-			let initialMouseCoordinates=this.projectToSphere(this.mouse);
+		if(Math.abs(this.mouse[0] -this.moveMouse[0]) || Math.abs(this.mouse[1] -this.moveMouse[1])){
 			let finalMouseCoordinates=this.projectToSphere(this.moveMouse);
-			console.log(initialMouseCoordinates,finalMouseCoordinates);
-			this.scene.globalTrackball(initialMouseCoordinates,finalMouseCoordinates)
+			// console.log(initialMouseCoordinates,finalMouseCoordinates);
+			this.scene.globalTrackball(this.initialMouseCoordinates,finalMouseCoordinates);
+			this.initialMouseCoordinates=finalMouseCoordinates;
 		}
 
 	}
