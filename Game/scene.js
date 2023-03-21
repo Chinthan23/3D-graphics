@@ -10,6 +10,9 @@ export class Scene
 		this.models = [this.field,this.cube]
 		this.mode=1;
 		this.cameraChange=false;
+
+		this.zoom=vec3.create();
+		vec3.set(this.zoom,1,1,1);
 		//Keeping the view and projection matrices in the scene as they are global properties and apply to all models.
 		this.eyeVector=vec3.create();
 		this.eyeVector2=vec3.create();
@@ -31,7 +34,7 @@ export class Scene
 		this.globalViewMatrix=mat4.create();
 		mat4.lookAt(this.localViewMatrix,this.eyeVector,this.centerVector,this.upVector);
 		mat4.lookAt(this.globalViewMatrix,this.eyeVector2,this.centerVector2,this.upVector2);
-		this.viewMatrix=this.localViewMatrix;
+		this.viewMatrix=mat4.create();
 		// mat4.invert(this.viewMatrix,this.viewMatrix);
 
 		this.rotationQuaternion=quat.create();
@@ -56,10 +59,6 @@ export class Scene
 			console.log(primitive)
 		}
 	}
-	updateViewMatrixOnModeChange(mode){
-		this.viewMatrix=mode===1? this.localViewMatrix:this.globalViewMatrix;
-		// mat4.invert(this.viewMatrix,this.viewMatrix);
-	}
 	globalTrackball(initialCoordinates,finalCoordinates){
 		let theta=vec3.angle(initialCoordinates,finalCoordinates)*2.5;
 		vec3.cross(this.globalRotationAxis,initialCoordinates,finalCoordinates);
@@ -73,7 +72,17 @@ export class Scene
 		mat4.multiply(this.globalViewMatrix,this.globalViewMatrix,tempMatrix);
 	}
 	scaleBy(factor){
-		mat4.scale(this.globalViewMatrix,this.globalViewMatrix,[factor,factor,factor]);
+		vec3.set(this.zoom,factor,factor,factor);
+	}
+	updateViewMatrix(){
+		mat4.identity(this.viewMatrix);
+		if(this.mode===1){
+			mat4.copy(this.viewMatrix,this.localViewMatrix);
+		}
+		else{
+			mat4.copy(this.viewMatrix,this.globalViewMatrix);
+			mat4.scale(this.viewMatrix,this.viewMatrix,this.zoom);
+		}
 	}
 	setQuatIdentity(){
 		quat.identity(this.rotationQuaternion);
@@ -82,7 +91,6 @@ export class Scene
 		if(event.key === 'c'){
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
-			this.updateViewMatrixOnModeChange(this.mode);
 		}
 	}
 }

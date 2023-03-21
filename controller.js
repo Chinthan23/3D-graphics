@@ -13,9 +13,11 @@ export class Controller{
 		this.shader.use();
 		this.move=false;
 		this.guiSelect=false;
+		this.trackballSpehereRadiusOg=1;
 		this.trackballSpehereRadius=1;
 		this.initialMouseCoordinates=[0,0,0];
-		this.zoomFactor=0.5;
+		this.zoomFactor=0.1;
+		this.zoom=1;
 
 		this.mouse=vec2.create(); //initial mouse coordinates
 		vec2.set(this.mouse,0,0)
@@ -50,14 +52,13 @@ export class Controller{
 			}
 		}
 		else if(event.type==='wheel'){
-			if(event.deltaY>0 && this.guiSelect===false && this.scene.mode===2 ){
-				this.trackballSpehereRadius+= this.trackballSpehereRadius*this.zoomFactor;
-				this.scene.scaleBy(1/this.zoomFactor);
-			}
-			else if (event.deltaY<0 && this.guiSelect===false && this.scene.mode===2){
-				this.trackballSpehereRadius-= this.trackballSpehereRadius*this.zoomFactor;
-				this.scene.scaleBy(this.zoomFactor);
-
+			if(this.guiSelect===false && this.scene.mode===2 ){
+				this.zoom+=event.deltaY>0?this.zoomFactor: -this.zoomFactor;
+				if(this.zoom<0) this.zoom=0;
+				if(this.zoom>15) this.zoomFactor=2;
+				else this.zoomFactor=0.1;
+				this.trackballSpehereRadius= this.trackballSpehereRadiusOg*this.zoom;
+				this.scene.scaleBy(this.zoom);
 			}
 		}
 	}
