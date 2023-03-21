@@ -52,6 +52,10 @@ document.addEventListener('mouseup', (event) => {
 	controller.processEvent(event);
 	controller.move=false;
 })
+document.addEventListener('wheel', (event)=> {
+	event.preventDefault();
+	controller.processEvent(event);
+})
 renderer.setAnimationLoop(animation);
 //Draw loop
 function animation() 

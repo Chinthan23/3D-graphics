@@ -72,6 +72,9 @@ export class Scene
 		mat4.fromQuat(tempMatrix,this.rotationQuaternion)
 		mat4.multiply(this.globalViewMatrix,this.globalViewMatrix,tempMatrix);
 	}
+	scaleBy(factor){
+		mat4.scale(this.globalViewMatrix,this.globalViewMatrix,[factor,factor,factor]);
+	}
 	setQuatIdentity(){
 		quat.identity(this.rotationQuaternion);
 	}

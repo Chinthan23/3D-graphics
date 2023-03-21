@@ -15,6 +15,7 @@ export class Controller{
 		this.guiSelect=false;
 		this.trackballSpehereRadius=1;
 		this.initialMouseCoordinates=[0,0,0];
+		this.zoomFactor=0.5;
 
 		this.mouse=vec2.create(); //initial mouse coordinates
 		vec2.set(this.mouse,0,0)
@@ -48,6 +49,17 @@ export class Controller{
 				this.scene.setQuatIdentity();
 			}
 		}
+		else if(event.type==='wheel'){
+			if(event.deltaY>0 && this.guiSelect===false && this.scene.mode===2 ){
+				this.trackballSpehereRadius+= this.trackballSpehereRadius*this.zoomFactor;
+				this.scene.scaleBy(1/this.zoomFactor);
+			}
+			else if (event.deltaY<0 && this.guiSelect===false && this.scene.mode===2){
+				this.trackballSpehereRadius-= this.trackballSpehereRadius*this.zoomFactor;
+				this.scene.scaleBy(this.zoomFactor);
+
+			}
+		}
 	}
 	projectToSphere(mouse){
 		let normalizedMouseX=(2*mouse[0] - this.screenWidth)/this.screenWidth;
@@ -60,7 +72,7 @@ export class Controller{
 		normalizedMouseY=normalizedMouseY<-1?-1:normalizedMouseY;
 
 		let d=normalizedMouseX*normalizedMouseX + normalizedMouseY*normalizedMouseY;
-		let sphereZ=d<1.0? Math.sqrt(1-d):0.0;
+		let sphereZ=d<this.trackballSpehereRadius? Math.sqrt(this.trackballSpehereRadius-d):0.0;
 		let normalizeFinal= 1.0/Math.sqrt(normalizedMouseX*normalizedMouseX +normalizedMouseY*normalizedMouseY + sphereZ*sphereZ);
 		normalizedMouseX*=normalizeFinal, normalizedMouseY*=normalizeFinal, sphereZ*=normalizeFinal;
 		return [normalizedMouseX, normalizedMouseY,sphereZ]
