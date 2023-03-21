@@ -29,19 +29,15 @@ export class Controller{
 			this.scene.processEvent(event);
 		}
 		else if (event.type==='mousedown'){
-			console.log(this.move)
 			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
-				console.log(event);
 				vec2.set(this.mouse,event.x,event.y);
-				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
 				vec2.set(this.moveMouse,event.x,event.y);
-				console.log(this.initialMouseCoordinates);
+				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
 			}
 		}
 		else if (event.type==='mousemove'){
 			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
-				vec2.set(this.moveMouse,event.x,event.y)
-				console.log(this.mouse,this.moveMouse);
+				vec2.set(this.moveMouse,event.x,event.y);c
 				this.rotateCamera3D();
 			}
 		}
@@ -50,7 +46,6 @@ export class Controller{
 				vec2.set(this.mouse,event.x,event.y)
 				vec2.set(this.moveMouse,event.x,event.y)
 				this.scene.setQuatIdentity();
-				console.log(this.mouse,this.moveMouse);
 			}
 		}
 	}
@@ -73,7 +68,6 @@ export class Controller{
 	rotateCamera3D(){
 		if(Math.abs(this.mouse[0] -this.moveMouse[0]) || Math.abs(this.mouse[1] -this.moveMouse[1])){
 			let finalMouseCoordinates=this.projectToSphere(this.moveMouse);
-			// console.log(initialMouseCoordinates,finalMouseCoordinates);
 			this.scene.globalTrackball(this.initialMouseCoordinates,finalMouseCoordinates);
 			this.initialMouseCoordinates=finalMouseCoordinates;
 		}

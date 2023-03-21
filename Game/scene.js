@@ -6,7 +6,7 @@ export class Scene
 	constructor(width, height)
 	{
 		this.field= new Field(2,4,5);
-		this.cube= new Model([1,0.5,0.5,1],1);
+		this.cube= new Model([1,0.5,0.5,1]);
 		this.models = [this.field,this.cube]
 		this.mode=1;
 		this.cameraChange=false;
@@ -39,8 +39,14 @@ export class Scene
 		this.far=1e4;
 		this.projectionMatrix=mat4.create();
 		mat4.perspective(this.projectionMatrix,75*Math.PI/180,width/height,this.near,this.far);
+		this.loadAllModels();
 	}
 
+	async loadAllModels(){
+		const response=await this.cube.loadModel("../models-blender/Sculpt/Sculpt.obj");
+		this.modelsLoaded=response;
+		return response;
+	}
 	add(primitive)
 	{
 		if( this.primitives && primitive )

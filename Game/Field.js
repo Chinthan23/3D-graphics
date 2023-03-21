@@ -16,7 +16,7 @@ export class Field {
 		this.vertexPositions = [];
 		this.updateField();
 		this.transform = new Transform()
-		this.color=[1,1,0,1];
+		this.color=[0.5,0.5,0.5,1];
 		this.type="normal";
 	}
 	updateField(){
