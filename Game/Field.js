@@ -1,13 +1,13 @@
 import { Transform } from '../lib/threeD.js';
 
 export class Field {
-	constructor(m = 2, n = 3, radius = 10) {
+	constructor(m = 2, n = 3, radius = 20) {
 		this.numOfPlayers = m;
 		this.numOfSides = n;
 
 		this.centerX = 0.0;
 		this.centerY = 0.0;
-		this.centerZ = -2;
+		this.centerZ = -2.0;
 		this.radius = radius;
 		this.vertexPositions = [];
 		this.angleBetweenTwoVertices = 2 * Math.PI / this.numOfSides;
@@ -18,6 +18,7 @@ export class Field {
 		this.transform = new Transform()
 		this.color=[0.5,0.5,0.5,1];
 		this.type="normal";
+		console.log(this);
 	}
 	updateField(){
 		//reset vertices and calculate new ones.

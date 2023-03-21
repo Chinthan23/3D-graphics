@@ -13,6 +13,7 @@ export class Model{
 		this.mesh=new webglObjLoader.Mesh(text);
 		this.vertices=this.mesh.vertices;
 		this.indices=this.mesh.indices;
+		this.vertexNormals=this.mesh.vertexNormals;
 		return true;
 	}
 

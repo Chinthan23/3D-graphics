@@ -37,7 +37,7 @@ export class Controller{
 		}
 		else if (event.type==='mousemove'){
 			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
-				vec2.set(this.moveMouse,event.x,event.y);c
+				vec2.set(this.moveMouse,event.x,event.y);
 				this.rotateCamera3D();
 			}
 		}
@@ -54,10 +54,10 @@ export class Controller{
 		let normalizedMouseY=(this.screenHeight- 2*mouse[1])/this.screenHeight;
 		
 		//keeping in between -1 to 1
-		// normalizedMouseX=normalizedMouseX>1?1:normalizedMouseX;
-		// normalizedMouseX=normalizedMouseX<-1?-1:normalizedMouseX;
-		// normalizedMouseY=normalizedMouseY>1?1:normalizedMouseY;
-		// normalizedMouseY=normalizedMouseY<-1?-1:normalizedMouseY;
+		normalizedMouseX=normalizedMouseX>1?1:normalizedMouseX;
+		normalizedMouseX=normalizedMouseX<-1?-1:normalizedMouseX;
+		normalizedMouseY=normalizedMouseY>1?1:normalizedMouseY;
+		normalizedMouseY=normalizedMouseY<-1?-1:normalizedMouseY;
 
 		let d=normalizedMouseX*normalizedMouseX + normalizedMouseY*normalizedMouseY;
 		let sphereZ=d<1.0? Math.sqrt(1-d):0.0;

@@ -6,7 +6,7 @@ export class Scene
 	constructor(width, height)
 	{
 		this.field= new Field(2,4,5);
-		this.cube= new Model([1,0.5,0.5,1]);
+		this.cube= new Model([1,0,0,1]);
 		this.models = [this.field,this.cube]
 		this.mode=1;
 		this.cameraChange=false;
@@ -36,10 +36,11 @@ export class Scene
 
 		this.rotationQuaternion=quat.create();
 		this.near=1e-4;
-		this.far=1e4;
+		this.far=1e10;
 		this.projectionMatrix=mat4.create();
 		mat4.perspective(this.projectionMatrix,75*Math.PI/180,width/height,this.near,this.far);
 		this.loadAllModels();
+		this.cube.transform.translateTo(5,0,-1);
 	}
 
 	async loadAllModels(){
