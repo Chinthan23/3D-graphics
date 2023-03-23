@@ -1,7 +1,7 @@
 import { Transform } from '../lib/threeD.js';
 
 export class Field {
-	constructor(m = 2, n = 3, radius = 20) {
+	constructor(m = 3, n = 5, radius = 10) {
 		this.numOfPlayers = m;
 		this.numOfSides = n;
 

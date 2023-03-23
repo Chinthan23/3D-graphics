@@ -7,7 +7,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-const controller= new Controller(renderer);
+const controller= new Controller(renderer,4,5);
 const fieldConfigs={
 	m: controller.scene.field.numOfPlayers,
 	n: controller.scene.field.numOfSides
@@ -16,7 +16,7 @@ const gui = new dat.GUI();
 const Field= gui.addFolder('Field')
 Field.add(fieldConfigs, 'm',0,fieldConfigs.n-1 ).step(1).onChange( function (value) {
 	if(controller.guiSelect===true){
-		controller.scene.field.setNumOfPlayers(value);
+		controller.scene.setNumOfPlayers(value);
 		fieldConfigs.m=value;
 	}
 })
@@ -60,6 +60,6 @@ renderer.setAnimationLoop(animation);
 //Draw loop
 function animation() 
 {
-	renderer.clear(0.9, 0.9, 0.9, 1);
-	if(controller.scene.modelsLoaded) renderer.render(controller.scene, controller.shader);
+	renderer.clear(0.1, 0.1, 0.1, 1);
+	if(controller.scene.allModelsLoaded) renderer.render(controller.scene, controller.shader);
 }

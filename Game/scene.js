@@ -1,13 +1,14 @@
 import {vec3,mat4, quat} from "../lib/threeD.js";
 import {Field} from "./Field.js";
-import {Model} from "../models/Model.js"
+import {Model} from "../models/Model.js";
+
 export class Scene
 {
-	constructor(width, height)
+	constructor(width, height,numPlayers,numSides)
 	{
-		this.field= new Field(2,4,5);
-		this.cube= new Model([1,0,0,1]);
-		this.models = [this.field,this.cube]
+		this.field= new Field(numPlayers,numSides,5);
+		this.numPlayers=numPlayers;
+		this.models = []
 		this.mode=1;
 		this.cameraChange=false;
 
@@ -16,7 +17,7 @@ export class Scene
 		//Keeping the view and projection matrices in the scene as they are global properties and apply to all models.
 		this.eyeVector=vec3.create();
 		this.eyeVector2=vec3.create();
-		vec3.set(this.eyeVector,0,0,5)
+		vec3.set(this.eyeVector,0,0,10)
 		vec3.set(this.eyeVector2,0,-10,0)
 
 		this.upVector=vec3.create();
@@ -35,28 +36,89 @@ export class Scene
 		mat4.lookAt(this.localViewMatrix,this.eyeVector,this.centerVector,this.upVector);
 		mat4.lookAt(this.globalViewMatrix,this.eyeVector2,this.centerVector2,this.upVector2);
 		this.viewMatrix=mat4.create();
-		// mat4.invert(this.viewMatrix,this.viewMatrix);
 
 		this.rotationQuaternion=quat.create();
 		this.near=1e-4;
 		this.far=1e10;
 		this.projectionMatrix=mat4.create();
 		mat4.perspective(this.projectionMatrix,75*Math.PI/180,width/height,this.near,this.far);
+		
+		this.modelPresent=new Array(numSides).fill(false);
+		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
+		this.initialiseField();
 		this.loadAllModels();
-		this.cube.transform.translateTo(5,0,-1);
 	}
-
+	getFreePositionInField(){
+		let pos=Math.floor(Math.random()*this.modelPresent.length);
+		while(this.modelPresent[pos]===true){
+			pos=Math.floor(Math.random()*this.modelPresent.length);
+		}
+		this.modelPresent[pos]=true;
+		return pos;
+	}
+	initialiseField(){
+		for(let i=0;i<this.numPlayers;i++){
+			
+			this.add(new Model([1,0,0,1],this.modelPathname[Math.floor(Math.random()*3)],
+			this.field.vertexPosition[this.getFreePositionInField()]));
+		}
+	}
+	addExtraModels(m){
+		for(let i=0;i<m;i++){
+			let pos=this.getFreePositionInField();
+			this.add(new Model([1,0,0,1],this.modelPathname[Math.floor(Math.random()*3)],
+			this.field.vertexPosition[pos]));
+		}
+	}
+	setNumOfPlayers(m){
+		this.field.setNumOfPlayers(m);
+		if(m===this.numPlayers){
+			return;
+		}
+		else if(m<this.numPlayers){
+			let excess=this.numPlayers-m;
+			this.numPlayers=m;
+			for(let i=0;i<excess; i++){
+				let temp=this.models.pop();
+				for(let j=0;j<this.field.vertexPosition.length-1;j++){
+					if(temp.position===this.field.vertexPosition[j]){
+						this.modelPresent[j]=false;
+					}
+				}
+			}
+		}
+		else if(m>this.numPlayers){
+			let excess=m-this.numPlayers;
+			this.addExtraModels(excess);
+			this.allModelsLoaded=false;
+			this.loadExtraModels(excess);
+			this.numPlayers=m;
+		}
+	}
 	async loadAllModels(){
-		const response=await this.cube.loadModel("../models-blender/Sculpt/Sculpt.obj");
-		this.modelsLoaded=response;
-		return response;
+		for(let i=0;i<this.models.length;i++){
+			const response=await this.models[i].loadModel();
+			console.log(response);
+			if(i===0) this.modelsLoaded=response;
+			else this.modelsLoaded&=response;
+		}
+		this.allModelsLoaded=true & this.modelsLoaded;
+		// return response;
 	}
-	add(primitive)
+	async loadExtraModels(excess){
+		for(let i=this.numPlayers;i<this.models.length;i++){
+			const response=await this.models[i].loadModel();
+			this.modelsLoaded&=response;
+		}
+		this.allModelsLoaded=true & this.modelsLoaded;
+		// return response;
+	}
+	add(model)
 	{
-		if( this.primitives && primitive )
+		if( this.models && model )
 		{
-			this.primitives.push(primitive)
-			console.log(primitive)
+			this.models.push(model)
+			// console.log(model)
 		}
 	}
 	globalTrackball(initialCoordinates,finalCoordinates){

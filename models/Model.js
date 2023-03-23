@@ -2,13 +2,16 @@ import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
 import {Transform} from "../lib/transform.js"
 
 export class Model{
-	constructor(color,num=1){
+	constructor(color,modelPath,initialFieldPosition){
 		this.type="Model";
+		this.modelPath=modelPath;
 		this.transform = new Transform();
-		this.color=color===undefined?[1,0,0,1]:color;
+		this.color=color;
+		this.position=initialFieldPosition;
+		this.transform.translateTo(initialFieldPosition[0],initialFieldPosition[1],initialFieldPosition[2]);
 	}
-	async loadModel(pathname){
-		const response= await fetch(pathname);
+	async loadModel(){
+		const response= await fetch(this.modelPath);
 		const text=await response.text();
 		this.mesh=new webglObjLoader.Mesh(text);
 		this.vertices=this.mesh.vertices;

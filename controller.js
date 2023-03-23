@@ -5,8 +5,8 @@ import {Scene} from './Game/scene.js';
 
 
 export class Controller{
-	constructor(renderer){
-		this.scene= new Scene(renderer.domElement.width,renderer.domElement.height);
+	constructor(renderer,numPlayers=3,numSides=5){
+		this.scene= new Scene(renderer.domElement.width,renderer.domElement.height,numPlayers,numSides);
 		this.shader = new Shader(renderer.glContext(),vertexShaderSrc,fragmentShaderSrc);
 		this.screenWidth=renderer.domElement.width;
 		this.screenHeight=renderer.domElement.height;
