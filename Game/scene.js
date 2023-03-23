@@ -70,6 +70,13 @@ export class Scene
 			this.field.vertexPosition[pos]));
 		}
 	}
+	setNumOfSides(n){
+		this.field.setNumOfSides(n);
+		this.modelPresent=new Array(n).fill(false);
+		for(let i=0;i<this.models.length;i++){
+			this.models[i].updatePosition(this.field.vertexPosition[this.getFreePositionInField()]);
+		}
+	}
 	setNumOfPlayers(m){
 		this.field.setNumOfPlayers(m);
 		if(m===this.numPlayers){
@@ -113,6 +120,7 @@ export class Scene
 		this.allModelsLoaded=true & this.modelsLoaded;
 		// return response;
 	}
+
 	add(model)
 	{
 		if( this.models && model )

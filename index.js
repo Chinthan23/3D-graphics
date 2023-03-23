@@ -22,7 +22,7 @@ Field.add(fieldConfigs, 'm',0,fieldConfigs.n-1 ).step(1).onChange( function (val
 })
 Field.add(fieldConfigs, 'n', 3, 20).step(1).onChange( function () {
 	if(controller.guiSelect===true){
-		controller.scene.field.setNumOfSides(fieldConfigs.n);
+		controller.scene.setNumOfSides(fieldConfigs.n);
 		Field.__controllers[0].__max=fieldConfigs.n-1;
 		Field.updateDisplay();
 	}

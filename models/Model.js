@@ -8,7 +8,7 @@ export class Model{
 		this.transform = new Transform();
 		this.color=color;
 		this.position=initialFieldPosition;
-		this.transform.translateTo(initialFieldPosition[0],initialFieldPosition[1],initialFieldPosition[2]);
+		this.transform.translateTo(this.position[0],this.position[1],this.position[2]);
 	}
 	async loadModel(){
 		const response= await fetch(this.modelPath);
@@ -19,5 +19,8 @@ export class Model{
 		this.vertexNormals=this.mesh.vertexNormals;
 		return true;
 	}
-
+	updatePosition(positions){
+		this.position=positions;
+		this.transform.translateTo(this.position[0],this.position[1],this.position[2]);
+	}
 }
