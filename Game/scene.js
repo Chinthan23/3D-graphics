@@ -59,14 +59,14 @@ export class Scene
 	initialiseField(){
 		for(let i=0;i<this.numPlayers;i++){
 			
-			this.add(new Model([1,0,0,1],this.modelPathname[Math.floor(Math.random()*3)],
+			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
 			this.field.vertexPosition[this.getFreePositionInField()]));
 		}
 	}
 	addExtraModels(m){
 		for(let i=0;i<m;i++){
 			let pos=this.getFreePositionInField();
-			this.add(new Model([1,0,0,1],this.modelPathname[Math.floor(Math.random()*3)],
+			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
 			this.field.vertexPosition[pos]));
 		}
 	}
