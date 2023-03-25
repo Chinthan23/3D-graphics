@@ -1,29 +1,35 @@
 import { WebGLRenderer, Shader, mat4, vec2,quat } from './lib/threeD.js';
 import {vertexShaderSrc} from './shaders/vertex.js';
 import {fragmentShaderSrc} from './shaders/fragment.js';
+import {fragmentPickerShaderSrc} from './shaders/fragemntPicker.js'
 import {Scene} from './Game/scene.js';
 
 
 export class Controller{
 	constructor(renderer,numPlayers=3,numSides=5){
 		this.scene= new Scene(renderer.domElement.width,renderer.domElement.height,numPlayers,numSides);
-		this.shader = new Shader(renderer.glContext(),vertexShaderSrc,fragmentShaderSrc);
+		this.shader = new Shader(renderer.glContext(),vertexShaderSrc,fragmentShaderSrc,"normal");
+		this.shaderPicker= new Shader(renderer.glContext(),vertexShaderSrc,fragmentPickerShaderSrc,"picker");
 		this.screenWidth=renderer.domElement.width;
 		this.screenHeight=renderer.domElement.height;
 		this.shader.use();
+		
 		this.move=false;
 		this.guiSelect=false;
+		
 		this.trackballSpehereRadiusOg=1;
 		this.trackballSpehereRadius=1;
 		this.initialMouseCoordinates=[0,0,0];
 		this.zoomFactor=0.1;
 		this.zoom=1;
+		this.renderer=renderer;
 
 		this.mouse=vec2.create(); //initial mouse coordinates
 		vec2.set(this.mouse,0,0)
 		this.moveMouse=vec2.create(); // final mouse coordinates
-		vec2.set(this.moveMouse,0,0)
+		vec2.set(this.moveMouse,0,0);
 	}
+
 	processEvent(event){
 		if(event.type==='keydown'){
 			if(event.key==='m' || event.key==='M'){
@@ -32,13 +38,14 @@ export class Controller{
 			this.scene.processEvent(event);
 		}
 		else if (event.type==='mousedown'){
-			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
+			if(this.guiSelect===false && this.scene.mode===2){
+				this.move=true;
 				vec2.set(this.mouse,event.x,event.y);
 				vec2.set(this.moveMouse,event.x,event.y);
 				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
 			}
 		}
-		else if (event.type==='mousemove'){
+		else if (event.type==='mousemove' ){
 			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
 				vec2.set(this.moveMouse,event.x,event.y);
 				this.rotateCamera3D();
@@ -49,6 +56,7 @@ export class Controller{
 				vec2.set(this.mouse,event.x,event.y)
 				vec2.set(this.moveMouse,event.x,event.y)
 				this.scene.setQuatIdentity();
+				this.move=false;
 			}
 		}
 		else if(event.type==='wheel'){
@@ -60,6 +68,29 @@ export class Controller{
 				this.trackballSpehereRadius= this.trackballSpehereRadiusOg*this.zoom;
 				this.scene.scaleBy(this.zoom);
 			}
+		}
+		else if(event.type==='click'){
+			this.shaderPicker.use();
+			this.renderer.clear(0.1, 0.1, 0.1, 1);
+			this.renderer.render(this.scene,this.shaderPicker);
+			let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
+			if(this.scene.playerSelected===-1){
+				this.scene.models.forEach(model => {
+					if(model.id===object[0]){
+						this.scene.playerSelected=model.id;
+						model.select();
+					}
+				});
+			}
+			else if(this.scene.playerSelected===object[0]){
+				this.scene.models.forEach(model => {
+					if(model.id===this.scene.playerSelected){
+						this.scene.playerSelected=-1;
+						model.deselect();
+					}
+				});
+			}
+			this.shader.use();
 		}
 	}
 	projectToSphere(mouse){
@@ -84,6 +115,5 @@ export class Controller{
 			this.scene.globalTrackball(this.initialMouseCoordinates,finalMouseCoordinates);
 			this.initialMouseCoordinates=finalMouseCoordinates;
 		}
-
 	}
 }

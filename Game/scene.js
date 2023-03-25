@@ -47,6 +47,8 @@ export class Scene
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
 		this.initialiseField();
 		this.loadAllModels();
+
+		this.playerSelected=-1;
 	}
 	getFreePositionInField(){
 		let pos=Math.floor(Math.random()*this.modelPresent.length);
@@ -58,23 +60,24 @@ export class Scene
 	}
 	initialiseField(){
 		for(let i=0;i<this.numPlayers;i++){
-			
+			let pos=this.getFreePositionInField();
 			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
-			this.field.vertexPosition[this.getFreePositionInField()]));
+			this.field.vertexPosition[pos],pos));
 		}
 	}
 	addExtraModels(m){
 		for(let i=0;i<m;i++){
 			let pos=this.getFreePositionInField();
 			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
-			this.field.vertexPosition[pos]));
+			this.field.vertexPosition[pos],pos));
 		}
 	}
 	setNumOfSides(n){
 		this.field.setNumOfSides(n);
 		this.modelPresent=new Array(n).fill(false);
 		for(let i=0;i<this.models.length;i++){
-			this.models[i].updatePosition(this.field.vertexPosition[this.getFreePositionInField()]);
+			let pos=this.getFreePositionInField();
+			this.models[i].updatePosition(this.field.vertexPosition[pos],pos);
 		}
 	}
 	setNumOfPlayers(m){
