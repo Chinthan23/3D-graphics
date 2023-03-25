@@ -30,9 +30,8 @@ export class Model{
 	updatePosition(positions,id){
 		this.position=positions;
 		this.id=id;
-		this.uID=this.getUID();
 		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1);
-		// this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
+		this.uID=this.getUID();
 		this.arrows.forEach(function (arrow) {
 			arrow.updatePosition(positions)
 		});
@@ -40,6 +39,10 @@ export class Model{
 	updateCenter(position){
 		this.transform.setCenter(position[0],position[1],position[2]+1);
 		this.arrows[0].updateCenter(position);
+	}
+	clearTranslation(){
+		this.transform.translateTo(0,0,0);
+		this.arrows[0].transform.translateTo(0,0,0);
 	}
 	reset(){
 		this.transform.angleX=0;

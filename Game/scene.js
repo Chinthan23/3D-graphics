@@ -54,7 +54,8 @@ export class Scene
 		this.start=-1;
 		this.startD=-1;
 		this.destD=-1;
-		this.directionVec=vec3.create();
+		this.catcherLength=-1;
+		this.playerLength=-1;
 	}
 	getFreePositionInField(num=0){
 		let pos=Math.floor(Math.random()*this.modelPresent.length);
@@ -189,22 +190,31 @@ export class Scene
 		}
 	}
 	configureArrow(){
-		let pos=Math.floor(Math.random()*(this.modelPresent.length));
-		this.startD=this.field.vertexPosition[pos];
+		this.catcherID=Math.floor(Math.random()*(this.modelPresent.length));
+		this.startD=this.field.vertexPosition[this.catcherID];
 		while(this.startD===this.start){
-			pos=Math.floor(Math.random()*(this.modelPresent.length));
-			this.startD=this.field.vertexPosition[pos];
+			this.catcherID=Math.floor(Math.random()*(this.modelPresent.length));
+			this.startD=this.field.vertexPosition[this.catcherID];
 		}
-		if(this.modelPresent[pos]===true){
+		if(this.modelPresent[this.catcherID]===true){
 			for( let model of this.models){
-				if(model.id===pos){
+				if(model.id===this.catcherID){
 					this.modelAtDestination=model;
 					break;
 				}
 			}
 		}
-		this.destD=this.field.vertexPosition[this.getFreePositionInField(1)];
-		if(this.modelAtDestination!=="") this.modelAtDestination.updateCenter(this.destD);
+		this.playerID=this.getFreePositionInField(1);
+		this.destD=this.field.vertexPosition[this.playerID];
+		this.catcherLength=vec3.distance(this.start,this.startD)
+		this.playerLength=vec3.distance(this.startD,this.destD)
+		if(this.modelAtDestination!==""){
+			this.modelAtDestination.updateCenter(this.destD);
+			this.modelAtDestination.transform.translateTo(0,0,-this.playerLength);
+			this.modelAtDestination.arrows[0].transform.translateTo(0,0,-this.playerLength);
+		}
 		this.modelSelected.updateCenter(this.startD);
+		this.modelSelected.transform.translateTo(0,0,-this.catcherLength);
+		this.modelSelected.arrows[0].transform.translateTo(0,0,-this.catcherLength);
 	}
 }
