@@ -9,7 +9,6 @@ export class Scene
 		this.field= new Field(numPlayers,numSides,5);
 		this.numPlayers=numPlayers;
 		this.models = []
-		this.arrow= new Model([1,0,0,1],"../models-blender/Arrow/arrow.obj",this.field.vertexPosition[0],200)
 		this.mode=1;
 		this.cameraChange=false;
 
@@ -47,8 +46,6 @@ export class Scene
 		this.modelPresent=new Array(numSides).fill(false);
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
 		this.initialiseField();
-		this.models.push(this.arrow)
-		this.models.pop();
 		this.loadAllModels();
 		this.playerSelected=-1;
 
@@ -56,6 +53,7 @@ export class Scene
 		this.modelAtDestination="";
 		this.start=-1;
 		this.dest=-1;
+		this.directionVec=vec3.create();
 	}
 	getFreePositionInField(num=0){
 		let pos=Math.floor(Math.random()*this.modelPresent.length);
@@ -192,6 +190,8 @@ export class Scene
 			let pos=Math.floor(Math.random()*(this.modelPresent.length));
 			this.dest=this.field.vertexPosition[pos];
 		}
-		console.log(this.start,this.dest)
+		vec3.set(this.directionVec,this.dest[0]-this.start[0],this.dest[1]-this.start[1],this.dest[2]-this.start[2])
+		vec3.normalize(this.directionVec,this.directionVec);
+		console.log(this.start,this.dest,this.directionVec)
 	}
 }

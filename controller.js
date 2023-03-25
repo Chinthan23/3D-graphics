@@ -62,7 +62,7 @@ export class Controller{
 				this.renderer.render(this.scene,this.shaderPicker);
 				let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
 				this.shader.use();
-				if(this.scene.playerSelected===-1){
+				if(this.scene.playerSelected===-1 && object[0]!==200){
 					for(let model of this.scene.models){
 						if(model.id===object[0]){
 							this.scene.playerSelected=model.id;

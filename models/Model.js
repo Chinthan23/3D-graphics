@@ -1,5 +1,6 @@
 import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
 import {Transform} from "../lib/transform.js"
+import { Arrow } from './Arrow.js';
 
 export class Model{
 	constructor(color,modelPath,initialFieldPosition,id){
@@ -11,8 +12,10 @@ export class Model{
 		this.color=color;
 		this.position=initialFieldPosition;
 		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
+		this.arrow=new Arrow(color,initialFieldPosition);
 		this.id=id;
 		this.uID=this.getUID();
+		console.log(this)
 	}
 	async loadModel(){
 		const response= await fetch(this.modelPath);
@@ -26,7 +29,8 @@ export class Model{
 	updatePosition(positions,id){
 		this.position=positions;
 		this.id=id;
-		this.transform.translateTo(this.position[0],this.position[1],this.position[2]);
+		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
+		this.arrow.updatePosition(positions);
 	}
 	getUID(){
 		return [
