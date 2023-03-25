@@ -76,17 +76,19 @@ export class Controller{
 					}
 				}
 				else if(this.scene.playerSelected===object[0]){
+					this.scene.modelPresent[this.scene.playerSelected]=false;
 					this.scene.playerSelected=-1;
 					this.scene.modelSelected.deselect();
 					this.scene.modelSelected.updateCenter([0,0,-2]);
 					this.scene.modelSelected.updatePosition(this.scene.startD,this.scene.catcherID);
 					this.scene.modelSelected.clearTranslation();
+					this.scene.modelPresent[this.scene.catcherID]=true;
 					if(this.scene.modelAtDestination!==""){
 						this.scene.modelAtDestination.updateCenter([0,0,-2]);
 						this.scene.modelAtDestination.updatePosition(this.scene.destD,this.scene.playerID);
 						this.scene.modelAtDestination.clearTranslation();
+						this.scene.modelPresent[this.scene.playerID]=true;
 					}
-					console.log(this.scene.models);
 					this.scene.modelSelected="";
 					this.scene.modelAtDestination="";
 					}
