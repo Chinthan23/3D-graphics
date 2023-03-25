@@ -1,3 +1,4 @@
+import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
 import {vec3,mat4, quat} from "../lib/threeD.js";
 import {Field} from "./Field.js";
 import {Model} from "../models/Model.js";
@@ -45,8 +46,9 @@ export class Scene
 		
 		this.modelPresent=new Array(numSides).fill(false);
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
-		this.initialiseField();
+		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
+		console.log(this);
 		this.playerSelected=-1;
 
 		this.modelSelected="";
@@ -68,15 +70,13 @@ export class Scene
 	initialiseField(){
 		for(let i=0;i<this.numPlayers;i++){
 			let pos=this.getFreePositionInField();
-			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
-			this.field.vertexPosition[pos],pos));
+			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
 		}
 	}
 	addExtraModels(m){
 		for(let i=0;i<m;i++){
 			let pos=this.getFreePositionInField();
-			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelPathname[Math.floor(Math.random()*3)],
-			this.field.vertexPosition[pos],pos));
+			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
 		}
 	}
 	setNumOfSides(n){
@@ -107,37 +107,22 @@ export class Scene
 		else if(m>this.numPlayers){
 			let excess=m-this.numPlayers;
 			this.addExtraModels(excess);
-			this.allModelsLoaded=false;
-			this.loadExtraModels(excess);
 			this.numPlayers=m;
 		}
 	}
 	async loadAllModels(){
-		for(let i=0;i<this.models.length;i++){
-			const response=await this.models[i].loadModel();
-			console.log(response);
-			if(i===0) this.modelsLoaded=response;
-			else this.modelsLoaded&=response;
+		for(let i=0;i<this.modelPathname.length;i++){
+			const response= await fetch(this.modelPathname[i]);
+			const text=await response.text();
+			this.modelText[i]=text;
+			if(i===0) this.modelsLoaded=response.ok;
+			else this.modelsLoaded&=response.ok;
 		}
-		this.allModelsLoaded=true & this.modelsLoaded;
-		// return response;
+		if(this.modelsLoaded) this.initialiseField();
 	}
-	async loadExtraModels(excess){
-		for(let i=this.numPlayers;i<this.models.length;i++){
-			const response=await this.models[i].loadModel();
-			this.modelsLoaded&=response;
-		}
-		this.allModelsLoaded=true & this.modelsLoaded;
-		// return response;
-	}
-
 	add(model)
 	{
-		if( this.models && model )
-		{
-			this.models.push(model)
-			// console.log(model)
-		}
+		if( this.models && model ) this.models.push(model)
 	}
 	globalTrackball(initialCoordinates,finalCoordinates){
 		let theta=vec3.angle(initialCoordinates,finalCoordinates)*2.5;

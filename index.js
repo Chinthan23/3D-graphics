@@ -64,5 +64,5 @@ renderer.setAnimationLoop(animation);
 function animation() 
 {
 	renderer.clear(0.1, 0.1, 0.1, 1);
-	if(controller.scene.allModelsLoaded) renderer.render(controller.scene, controller.shader);
+	renderer.render(controller.scene, controller.shader);
 }

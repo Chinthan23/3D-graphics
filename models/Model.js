@@ -3,9 +3,13 @@ import {Transform} from "../lib/transform.js"
 import { Arrow } from './Arrow.js';
 
 export class Model{
-	constructor(color,modelPath,initialFieldPosition,id){
+	constructor(color,modelText,initialFieldPosition,id){
+		this.mesh=new webglObjLoader.Mesh(modelText);
+		this.vertices=this.mesh.vertices;
+		this.indices=this.mesh.indices;
+		this.vertexNormals=this.mesh.vertexNormals;
+
 		this.type="Model";
-		this.modelPath=modelPath;
 		this.transform = new Transform();
 		this.normalColor=color;
 		this.selectedColor=[0.1,0.5,0.5,0.5];
@@ -17,15 +21,6 @@ export class Model{
 		this.id=id;
 		this.light=[0,0,-1];
 		this.uID=this.getUID();
-	}
-	async loadModel(){
-		const response= await fetch(this.modelPath);
-		const text=await response.text();
-		this.mesh=new webglObjLoader.Mesh(text);
-		this.vertices=this.mesh.vertices;
-		this.indices=this.mesh.indices;
-		this.vertexNormals=this.mesh.vertexNormals;
-		return true;
 	}
 	updatePosition(positions,id){
 		this.position=positions;
