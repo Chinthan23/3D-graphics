@@ -166,21 +166,25 @@ export class Scene
 		quat.identity(this.rotationQuaternion);
 	}
 	processEvent(event){
+		console.log(event);
 		if(event.key === 'c'){
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
 		}
 		else if(event.key==='x' && this.playerSelected>=0){
-			console.log(event);
 			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
+			this.modelSelected.arrow.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
 		}
 		else if(event.key==='y' && this.playerSelected>=0){
-			console.log(event);
 			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
+			this.modelSelected.arrow.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
 		}
 		else if(event.key==='z' && this.playerSelected>=0){
-			console.log(event);
 			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
+			this.modelSelected.arrow.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
+		}
+		else if(event.key==='r' && this.playerSelected>=0){
+			this.modelSelected.reset();
 		}
 	}
 	configureArrow(){

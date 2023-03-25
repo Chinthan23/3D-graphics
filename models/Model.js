@@ -12,10 +12,9 @@ export class Model{
 		this.color=color;
 		this.position=initialFieldPosition;
 		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
-		this.arrow=new Arrow(color,initialFieldPosition);
+		this.arrows=[new Arrow(color,initialFieldPosition)];
 		this.id=id;
 		this.uID=this.getUID();
-		console.log(this)
 	}
 	async loadModel(){
 		const response= await fetch(this.modelPath);
@@ -30,7 +29,14 @@ export class Model{
 		this.position=positions;
 		this.id=id;
 		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
-		this.arrow.updatePosition(positions);
+		this.arrows.forEach(function (arrow) {
+			arrow.updatePosition(positions)
+		});
+	}
+	reset(){
+		this.transform.angleX=0;
+		this.transform.angleY=0;
+		this.transform.angleZ=0;
 	}
 	getUID(){
 		return [
@@ -42,8 +48,14 @@ export class Model{
 	}
 	select(){
 		this.color=this.selectedColor;
+		this.arrows.forEach(function (arrow) {
+			arrow.select();
+		});
 	}
 	deselect(){
 		this.color=this.normalColor;
+		this.arrows.forEach(function (arrow) {
+			arrow.deselect();
+		});
 	}
 }
