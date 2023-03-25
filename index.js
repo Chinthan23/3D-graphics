@@ -52,9 +52,6 @@ document.addEventListener('wheel', (event)=> {
 	event.preventDefault();
 	controller.processEvent(event);
 })
-document.addEventListener('click', (event)=>{
-	controller.processEvent(event);
-})
 renderer.setAnimationLoop(animation);
 //Draw loop
 function animation() 

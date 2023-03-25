@@ -46,17 +46,21 @@ export class Scene
 		
 		this.modelPresent=new Array(numSides).fill(false);
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
-		this.models.push(this.arrow)
 		this.initialiseField();
+		this.models.push(this.arrow)
+		this.models.pop();
 		this.loadAllModels();
 		this.playerSelected=-1;
+
+		this.start=-1;
+		this.dest=-1;
 	}
-	getFreePositionInField(){
+	getFreePositionInField(num=0){
 		let pos=Math.floor(Math.random()*this.modelPresent.length);
 		while(this.modelPresent[pos]===true){
 			pos=Math.floor(Math.random()*this.modelPresent.length);
 		}
-		this.modelPresent[pos]=true;
+		num===0?this.modelPresent[pos]=true:"";
 		return pos;
 	}
 	initialiseField(){
@@ -166,5 +170,17 @@ export class Scene
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
 		}
+	}
+	configureArrow(){
+		let pos=Math.floor(Math.random()*(this.modelPresent.length));
+		this.dest=this.field.vertexPosition[pos];
+		while(this.dest===this.start){
+			let pos=Math.floor(Math.random()*(this.modelPresent.length));
+			this.dest=this.field.vertexPosition[pos];
+		}
+
+		console.log(this.start,this.dest);
+		let direction=[this.dest[0]-this.start[0],this.dest[1]-this.start[1],this.dest[2]-this.start[2]]
+		console.log(direction)
 	}
 }

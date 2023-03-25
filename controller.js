@@ -44,6 +44,33 @@ export class Controller{
 				vec2.set(this.moveMouse,event.x,event.y);
 				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
 			}
+			if(this.guiSelect===false){
+				this.shaderPicker.use();
+				this.renderer.clear(0.1, 0.1, 0.1, 1);
+				this.renderer.render(this.scene,this.shaderPicker);
+				let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
+				this.shader.use();
+				if(this.scene.playerSelected===-1){
+					for(let model of this.scene.models){
+						if(model.id===object[0]){
+							this.scene.playerSelected=model.id;
+							model.select();
+							this.scene.start=model.position;
+							this.scene.configureArrow();
+							break;
+						}
+					}
+				}
+				else if(this.scene.playerSelected===object[0]){
+					for(let model of this.scene.models){
+						if(model.id===this.scene.playerSelected){
+							this.scene.playerSelected=-1;
+							model.deselect();
+							break;
+						}
+					}
+				}
+			}
 		}
 		else if (event.type==='mousemove' ){
 			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
@@ -68,29 +95,6 @@ export class Controller{
 				this.trackballSpehereRadius= this.trackballSpehereRadiusOg*this.zoom;
 				this.scene.scaleBy(this.zoom);
 			}
-		}
-		else if(event.type==='click'){
-			this.shaderPicker.use();
-			this.renderer.clear(0.1, 0.1, 0.1, 1);
-			this.renderer.render(this.scene,this.shaderPicker);
-			let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
-			if(this.scene.playerSelected===-1){
-				this.scene.models.forEach(model => {
-					if(model.id===object[0]){
-						this.scene.playerSelected=model.id;
-						model.select();
-					}
-				});
-			}
-			else if(this.scene.playerSelected===object[0]){
-				this.scene.models.forEach(model => {
-					if(model.id===this.scene.playerSelected){
-						this.scene.playerSelected=-1;
-						model.deselect();
-					}
-				});
-			}
-			this.shader.use();
 		}
 	}
 	projectToSphere(mouse){

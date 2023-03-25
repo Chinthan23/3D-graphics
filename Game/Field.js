@@ -18,7 +18,6 @@ export class Field {
 		this.transform = new Transform()
 		this.color=[0.5,0.5,0.5,1];
 		this.type="normal";
-		console.log(this);
 	}
 	updateField(){
 		//reset vertices and calculate new ones.
