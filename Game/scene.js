@@ -52,7 +52,8 @@ export class Scene
 		this.modelSelected="";
 		this.modelAtDestination="";
 		this.start=-1;
-		this.dest=-1;
+		this.startD=-1;
+		this.destD=-1;
 		this.directionVec=vec3.create();
 	}
 	getFreePositionInField(num=0){
@@ -173,15 +174,15 @@ export class Scene
 		}
 		else if(event.key==='x' && this.playerSelected>=0){
 			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
-			this.modelSelected.arrow.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
+			this.modelSelected.arrows[0].transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
 		}
 		else if(event.key==='y' && this.playerSelected>=0){
 			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
-			this.modelSelected.arrow.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
+			this.modelSelected.arrows[0].transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
 		}
 		else if(event.key==='z' && this.playerSelected>=0){
 			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
-			this.modelSelected.arrow.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
+			this.modelSelected.arrows[0].transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
 		}
 		else if(event.key==='r' && this.playerSelected>=0){
 			this.modelSelected.reset();
@@ -189,13 +190,21 @@ export class Scene
 	}
 	configureArrow(){
 		let pos=Math.floor(Math.random()*(this.modelPresent.length));
-		this.dest=this.field.vertexPosition[pos];
-		while(this.dest===this.start){
-			let pos=Math.floor(Math.random()*(this.modelPresent.length));
-			this.dest=this.field.vertexPosition[pos];
+		this.startD=this.field.vertexPosition[pos];
+		while(this.startD===this.start){
+			pos=Math.floor(Math.random()*(this.modelPresent.length));
+			this.startD=this.field.vertexPosition[pos];
 		}
-		vec3.set(this.directionVec,this.dest[0]-this.start[0],this.dest[1]-this.start[1],this.dest[2]-this.start[2])
-		vec3.normalize(this.directionVec,this.directionVec);
-		console.log(this.start,this.dest,this.directionVec)
+		if(this.modelPresent[pos]===true){
+			for( let model of this.models){
+				if(model.id===pos){
+					this.modelAtDestination=model;
+					break;
+				}
+			}
+		}
+		this.destD=this.field.vertexPosition[this.getFreePositionInField(1)];
+		if(this.modelAtDestination!=="") this.modelAtDestination.updateCenter(this.destD);
+		this.modelSelected.updateCenter(this.startD);
 	}
 }

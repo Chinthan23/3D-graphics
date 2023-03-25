@@ -40,6 +40,7 @@ export class Controller{
 			let y=(1-this.t)*this.scene.start[1]+this.t*this.scene.dest[1];
 			// let z=(1-this.t)*this.scene.start[0]+this.t*this.scene.dest[0];
 			this.scene.modelSelected.transform.translateTo(x,y,-1);
+			this.scene.modelSelected.arrows[0].transform.translateTo(x,y,-1);
 		}
 	}
 	processEvent(event){
@@ -79,7 +80,10 @@ export class Controller{
 						if(model.id===this.scene.playerSelected){
 							this.scene.playerSelected=-1;
 							model.deselect();
+							this.scene.modelSelected.updateCenter([0,0,-1]);
+							if(this.scene.modelAtDestination!=="") this.scene.modelAtDestination.updateCenter([0,0,-1]);
 							this.scene.modelSelected="";
+							this.scene.modelAtDestination="";
 							break;
 						}
 					}

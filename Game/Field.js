@@ -17,6 +17,7 @@ export class Field {
 		this.updateField();
 		this.transform = new Transform()
 		this.color=[0.5,0.5,0.5,1];
+		this.light=[0,0,1];
 		this.type="normal";
 	}
 	updateField(){

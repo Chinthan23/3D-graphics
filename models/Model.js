@@ -11,9 +11,11 @@ export class Model{
 		this.selectedColor=[0.1,0.5,0.5,0.5];
 		this.color=color;
 		this.position=initialFieldPosition;
-		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
+		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1);
+		this.transform.translateTo(0,0,0);
 		this.arrows=[new Arrow(color,initialFieldPosition)];
 		this.id=id;
+		this.light=[0,0,-1];
 		this.uID=this.getUID();
 	}
 	async loadModel(){
@@ -28,15 +30,28 @@ export class Model{
 	updatePosition(positions,id){
 		this.position=positions;
 		this.id=id;
-		this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
+		this.uID=this.getUID();
+		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1);
+		// this.transform.translateTo(this.position[0],this.position[1],this.position[2]+1);
 		this.arrows.forEach(function (arrow) {
 			arrow.updatePosition(positions)
 		});
+	}
+	updateCenter(position){
+		this.transform.setCenter(position[0],position[1],position[2]+1);
+		this.arrows[0].updateCenter(position);
 	}
 	reset(){
 		this.transform.angleX=0;
 		this.transform.angleY=0;
 		this.transform.angleZ=0;
+		this.arrows.forEach(function (arrow) {
+			arrow.transform.angleX=0;
+			arrow.transform.angleY=0;
+			arrow.transform.angleZ=0;
+
+		});
+
 	}
 	getUID(){
 		return [
