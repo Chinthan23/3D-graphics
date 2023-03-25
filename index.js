@@ -1,4 +1,4 @@
-import { WebGLRenderer, Shader } from './lib/threeD.js';
+import { WebGLRenderer } from './lib/threeD.js';
 import { Controller } from './controller.js';
 import * as dat from 'https://cdn.skypack.dev/dat.gui';
 
@@ -13,7 +13,7 @@ const fieldConfigs={
 	n: controller.scene.field.numOfSides
 }
 const directionConfig={
-	t: controller.t
+	t: 0
 }
 const gui = new dat.GUI();
 gui.add(directionConfig, 't',0,1).step(0.01).onChange(function (value) {
@@ -34,7 +34,6 @@ Field.add(fieldConfigs, 'n', 3, 20).step(1).onChange( function () {
 		Field.updateDisplay();
 	}
 })
-// Field.add(fieldConfigs, 'translateZ', -100,100).step(0.1).onChange(function () {
 Field.open();
 gui.show();
 document.addEventListener('keydown', (event) =>{

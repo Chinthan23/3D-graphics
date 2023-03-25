@@ -48,7 +48,6 @@ export class Scene
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
 		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
-		console.log(this);
 		this.playerSelected=-1;
 
 		this.modelSelected="";
@@ -73,12 +72,6 @@ export class Scene
 			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
 		}
 	}
-	addExtraModels(m){
-		for(let i=0;i<m;i++){
-			let pos=this.getFreePositionInField();
-			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
-		}
-	}
 	setNumOfSides(n){
 		this.field.setNumOfSides(n);
 		this.modelPresent=new Array(n).fill(false);
@@ -94,21 +87,19 @@ export class Scene
 		}
 		else if(m<this.numPlayers){
 			let excess=this.numPlayers-m;
-			this.numPlayers=m;
 			for(let i=0;i<excess; i++){
 				let temp=this.models.pop();
-				for(let j=0;j<this.field.vertexPosition.length-1;j++){
-					if(temp.position===this.field.vertexPosition[j]){
-						this.modelPresent[j]=false;
-					}
-				}
+				this.modelPresent[temp.id]=false;
 			}
 		}
 		else if(m>this.numPlayers){
 			let excess=m-this.numPlayers;
-			this.addExtraModels(excess);
-			this.numPlayers=m;
+			for(let i=0;i<excess;i++){
+				let pos=this.getFreePositionInField();
+				this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
+			}
 		}
+		this.numPlayers=m;
 	}
 	async loadAllModels(){
 		for(let i=0;i<this.modelPathname.length;i++){
@@ -193,13 +184,15 @@ export class Scene
 		this.destD=this.field.vertexPosition[this.playerID];
 		this.catcherLength=vec3.distance(this.start,this.startD)
 		this.playerLength=vec3.distance(this.startD,this.destD)
+	}
+	movePlayers(fraction){
 		if(this.modelAtDestination!==""){
 			this.modelAtDestination.updateCenter(this.destD);
-			this.modelAtDestination.transform.translateTo(0,0,-this.playerLength);
-			this.modelAtDestination.arrows[0].transform.translateTo(0,0,-this.playerLength);
+			this.modelAtDestination.transform.translateTo(0,0,-this.playerLength*fraction);
+			this.modelAtDestination.arrows[0].transform.translateTo(0,0,-this.playerLength*fraction);
 		}
 		this.modelSelected.updateCenter(this.startD);
-		this.modelSelected.transform.translateTo(0,0,-this.catcherLength);
-		this.modelSelected.arrows[0].transform.translateTo(0,0,-this.catcherLength);
+		this.modelSelected.transform.translateTo(0,0,-this.catcherLength*fraction);
+		this.modelSelected.arrows[0].transform.translateTo(0,0,-this.catcherLength*fraction);
 	}
 }

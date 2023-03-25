@@ -29,18 +29,11 @@ export class Controller{
 		vec2.set(this.mouse,0,0)
 		this.moveMouse=vec2.create(); // final mouse coordinates
 		vec2.set(this.moveMouse,0,0);
-
-		this.t=0;
 	}
 	updateT(val){
 		console.log(val);
-		this.t=val;
 		if(this.scene.playerSelected>=0){
-			let x=(1-this.t)*this.scene.start[0]+this.t*this.scene.dest[0];
-			let y=(1-this.t)*this.scene.start[1]+this.t*this.scene.dest[1];
-			// let z=(1-this.t)*this.scene.start[0]+this.t*this.scene.dest[0];
-			this.scene.modelSelected.transform.translateTo(x,y,-1);
-			this.scene.modelSelected.arrows[0].transform.translateTo(x,y,-1);
+			this.scene.movePlayers(val);
 		}
 	}
 	processEvent(event){
