@@ -1,4 +1,5 @@
 import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
+import { vec3 } from '../lib/threeD.js';
 import {Transform} from "../lib/transform.js"
 import { Arrow } from './Arrow.js';
 
@@ -21,6 +22,7 @@ export class Model{
 		this.id=id;
 		this.light=[0,0,-1];
 		this.uID=this.getUID();
+		this.catcher=false;
 	}
 	updatePosition(positions,id){
 		this.position=positions;
@@ -47,9 +49,7 @@ export class Model{
 			arrow.transform.angleX=0;
 			arrow.transform.angleY=0;
 			arrow.transform.angleZ=0;
-
 		});
-
 	}
 	getUID(){
 		return [
@@ -70,5 +70,31 @@ export class Model{
 		this.arrows.forEach(function (arrow) {
 			arrow.deselect();
 		});
+	}
+	configureCatcherMove(fieldArray,n){
+		this.catcher=true;
+		this.destID=Math.floor(Math.random()*(n));
+		while(this.destID===this.id){
+			this.destID=Math.floor(Math.random()*(n));
+		}
+		this.dest=fieldArray[this.destID];
+		this.moveLength=vec3.distance(this.position,this.dest);
+		this.updateCenter(this.dest);
+	}
+	clearConfiguration(){
+		if(this.catcher) this.deselect();
+		this.updateCenter([0,0,-2]);
+		this.updatePosition(this.dest,this.destID);
+		this.clearTranslation();
+	}
+	configureFreeCorner(fieldArray,positionToMove){
+		this.destID=positionToMove;
+		this.dest=fieldArray[positionToMove];
+		this.moveLength=vec3.distance(this.position,this.dest);
+		this.updateCenter(this.dest);
+	}
+	move(fraction){
+		this.transform.translateTo(0,0,-this.moveLength*fraction);
+		this.arrows[0].transform.translateTo(0,0,-this.moveLength*fraction);
 	}
 }

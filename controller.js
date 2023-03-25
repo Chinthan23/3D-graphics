@@ -32,7 +32,7 @@ export class Controller{
 	}
 	updateT(val){
 		console.log(val);
-		if(this.scene.playerSelected>=0){
+		if(this.scene.modelSelected.id>=0){
 			this.scene.movePlayers(val);
 		}
 	}
@@ -56,37 +56,18 @@ export class Controller{
 				this.renderer.render(this.scene,this.shaderPicker);
 				this.shader.use();
 				let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
-				if(this.scene.playerSelected===-1 && object[0]!==200){
+				if(this.scene.modelSelected.id=== undefined && object[0]!==200){
 					for(let model of this.scene.models){
 						if(model.id===object[0]){
-							this.scene.playerSelected=model.id;
-							this.scene.modelSelected=model;
 							model.select();
-							this.scene.start=model.position;
-							this.scene.configureArrow();
+							this.scene.configurePlayers(model);
 							break;
 						}
 					}
 				}
-				else if(this.scene.playerSelected===object[0]){
-					this.scene.modelPresent[this.scene.playerSelected]=false;
-					this.scene.playerSelected=-1;
-					this.scene.modelSelected.deselect();
-					this.scene.modelSelected.updateCenter([0,0,-2]);
-					this.scene.modelSelected.updatePosition(this.scene.startD,this.scene.catcherID);
-					this.scene.modelSelected.clearTranslation();
-					this.scene.modelPresent[this.scene.catcherID]=true;
-					if(this.scene.modelAtDestination!==""){
-						this.scene.modelAtDestination.updateCenter([0,0,-2]);
-						this.scene.modelAtDestination.updatePosition(this.scene.destD,this.scene.playerID);
-						this.scene.modelAtDestination.clearTranslation();
-						this.scene.modelPresent[this.scene.playerID]=true;
-					}
-					this.scene.modelSelected="";
-					this.scene.modelAtDestination="";
-					}
+				else if(this.scene.modelSelected.id===object[0]) this.scene.clearPlayerConfigurations();
 				}
-			else if(this.playerSelected!==-1 ){
+			else if(this.modelSelected.id!==-1 ){
 				console.log(t);
 			}
 		}

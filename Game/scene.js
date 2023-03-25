@@ -48,7 +48,6 @@ export class Scene
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
 		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
-		this.playerSelected=-1;
 
 		this.modelSelected="";
 		this.modelAtDestination="";
@@ -149,50 +148,45 @@ export class Scene
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
 		}
-		else if(event.key==='x' && this.playerSelected>=0){
+		else if(event.key==='x' && typeof this.modelSelected === 'object'){
 			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
-			this.modelSelected.arrows[0].transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
 		}
-		else if(event.key==='y' && this.playerSelected>=0){
+		else if(event.key==='y' && typeof this.modelSelected === 'object'){
 			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
-			this.modelSelected.arrows[0].transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
 		}
-		else if(event.key==='z' && this.playerSelected>=0){
+		else if(event.key==='z' && typeof this.modelSelected === 'object'){
 			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
-			this.modelSelected.arrows[0].transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
 		}
-		else if(event.key==='r' && this.playerSelected>=0){
+		else if(event.key==='r' && typeof this.modelSelected === 'object'){
 			this.modelSelected.reset();
 		}
 	}
-	configureArrow(){
-		this.catcherID=Math.floor(Math.random()*(this.modelPresent.length));
-		this.startD=this.field.vertexPosition[this.catcherID];
-		while(this.startD===this.start){
-			this.catcherID=Math.floor(Math.random()*(this.modelPresent.length));
-			this.startD=this.field.vertexPosition[this.catcherID];
-		}
-		if(this.modelPresent[this.catcherID]===true){
+	configurePlayers(model){
+		this.modelSelected=model;
+		this.modelSelected.configureCatcherMove(this.field.vertexPosition,this.field.numOfSides);
+		if(this.modelPresent[this.modelSelected.destID]===true){
 			for( let model of this.models){
-				if(model.id===this.catcherID){
+				if(model.id===this.modelSelected.destID){
 					this.modelAtDestination=model;
+					this.modelAtDestination.configureFreeCorner(this.field.vertexPosition,this.getFreePositionInField(1));
 					break;
 				}
 			}
 		}
-		this.playerID=this.getFreePositionInField(1);
-		this.destD=this.field.vertexPosition[this.playerID];
-		this.catcherLength=vec3.distance(this.start,this.startD)
-		this.playerLength=vec3.distance(this.startD,this.destD)
+	}
+	clearPlayerConfigurations(){
+		this.modelPresent[this.modelSelected.id]=false;
+		this.modelPresent[this.modelSelected.destID]=true;
+		this.modelSelected.clearConfiguration();
+		if(this.modelAtDestination!==""){
+			this.modelAtDestination.clearConfiguration();
+			this.modelPresent[this.modelAtDestination.destID]=true;
+		}
+		this.modelSelected="";
+		this.modelAtDestination="";
 	}
 	movePlayers(fraction){
-		if(this.modelAtDestination!==""){
-			this.modelAtDestination.updateCenter(this.destD);
-			this.modelAtDestination.transform.translateTo(0,0,-this.playerLength*fraction);
-			this.modelAtDestination.arrows[0].transform.translateTo(0,0,-this.playerLength*fraction);
-		}
-		this.modelSelected.updateCenter(this.startD);
-		this.modelSelected.transform.translateTo(0,0,-this.catcherLength*fraction);
-		this.modelSelected.arrows[0].transform.translateTo(0,0,-this.catcherLength*fraction);
+		this.modelSelected.move(fraction);
+		if(this.modelAtDestination!=="") this.modelAtDestination.move(fraction);
 	}
 }
