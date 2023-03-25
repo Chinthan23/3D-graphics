@@ -7,10 +7,11 @@ export class Model{
 		this.modelPath=modelPath;
 		this.transform = new Transform();
 		this.normalColor=color;
-		this.selectedColor=[1,0,0,1];
+		this.selectedColor=[0.1,0.5,0.5,0.5];
 		this.color=color;
 		this.position=initialFieldPosition;
 		this.transform.translateTo(this.position[0],this.position[1],this.position[2]);
+		this.transform.rotX(90*Math.PI/180);
 		this.id=id;
 		this.uID=this.getUID();
 	}

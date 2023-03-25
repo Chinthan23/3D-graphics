@@ -9,6 +9,7 @@ export class Scene
 		this.field= new Field(numPlayers,numSides,5);
 		this.numPlayers=numPlayers;
 		this.models = []
+		this.arrow= new Model([1,0,0,1],"../models-blender/Arrow/arrow.obj",this.field.vertexPosition[0],200)
 		this.mode=1;
 		this.cameraChange=false;
 
@@ -45,9 +46,9 @@ export class Scene
 		
 		this.modelPresent=new Array(numSides).fill(false);
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
+		this.models.push(this.arrow)
 		this.initialiseField();
 		this.loadAllModels();
-
 		this.playerSelected=-1;
 	}
 	getFreePositionInField(){
