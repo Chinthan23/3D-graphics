@@ -182,7 +182,7 @@ export class Scene
 		this.modelAtDestination="";
 	}
 	movePlayers(fraction){
-		this.modelSelected.move(fraction);
-		if(this.modelAtDestination!=="") this.modelAtDestination.move(fraction);
+		this.modelSelected.movePlayer(fraction);
+		if(this.modelAtDestination!=="") this.modelAtDestination.movePlayer(fraction);
 	}
 }

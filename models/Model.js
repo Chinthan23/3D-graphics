@@ -99,7 +99,7 @@ export class Model{
 		this.moveLength=vec3.distance(this.position,this.dest);
 		this.updateCenter(this.dest);
 	}
-	move(fraction){
+	movePlayer(fraction){
 		this.transform.translateTo(0,0,-this.moveLength*fraction);
 		this.arrows[0].transform.translateTo(0,0,-this.moveLength*fraction);
 	}
