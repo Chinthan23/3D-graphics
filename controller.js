@@ -16,6 +16,7 @@ export class Controller{
 		
 		this.move=false;
 		this.guiSelect=false;
+		this.play=false;
 		
 		this.trackballSpehereRadiusOg=1;
 		this.trackballSpehereRadius=1;
@@ -28,8 +29,19 @@ export class Controller{
 		vec2.set(this.mouse,0,0)
 		this.moveMouse=vec2.create(); // final mouse coordinates
 		vec2.set(this.moveMouse,0,0);
-	}
 
+		this.t=0;
+	}
+	updateT(val){
+		console.log(val);
+		this.t=val;
+		if(this.scene.playerSelected>=0){
+			let x=(1-this.t)*this.scene.start[0]+this.t*this.scene.dest[0];
+			let y=(1-this.t)*this.scene.start[1]+this.t*this.scene.dest[1];
+			// let z=(1-this.t)*this.scene.start[0]+this.t*this.scene.dest[0];
+			this.scene.modelSelected.transform.translateTo(x,y,-1);
+		}
+	}
 	processEvent(event){
 		if(event.type==='keydown'){
 			if(event.key==='m' || event.key==='M'){
@@ -54,6 +66,7 @@ export class Controller{
 					for(let model of this.scene.models){
 						if(model.id===object[0]){
 							this.scene.playerSelected=model.id;
+							this.scene.modelSelected=model;
 							model.select();
 							this.scene.start=model.position;
 							this.scene.configureArrow();
@@ -66,10 +79,14 @@ export class Controller{
 						if(model.id===this.scene.playerSelected){
 							this.scene.playerSelected=-1;
 							model.deselect();
+							this.scene.modelSelected="";
 							break;
 						}
 					}
 				}
+			}
+			else if(this.playerSelected!==-1 ){
+				console.log(t);
 			}
 		}
 		else if (event.type==='mousemove' ){

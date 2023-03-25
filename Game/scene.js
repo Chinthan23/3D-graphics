@@ -52,6 +52,8 @@ export class Scene
 		this.loadAllModels();
 		this.playerSelected=-1;
 
+		this.modelSelected="";
+		this.modelAtDestination="";
 		this.start=-1;
 		this.dest=-1;
 	}
@@ -170,6 +172,18 @@ export class Scene
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
 		}
+		else if(event.key==='x' && this.playerSelected>=0){
+			console.log(event);
+			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
+		}
+		else if(event.key==='y' && this.playerSelected>=0){
+			console.log(event);
+			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
+		}
+		else if(event.key==='z' && this.playerSelected>=0){
+			console.log(event);
+			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
+		}
 	}
 	configureArrow(){
 		let pos=Math.floor(Math.random()*(this.modelPresent.length));
@@ -178,9 +192,6 @@ export class Scene
 			let pos=Math.floor(Math.random()*(this.modelPresent.length));
 			this.dest=this.field.vertexPosition[pos];
 		}
-
-		console.log(this.start,this.dest);
-		let direction=[this.dest[0]-this.start[0],this.dest[1]-this.start[1],this.dest[2]-this.start[2]]
-		console.log(direction)
+		console.log(this.start,this.dest)
 	}
 }
