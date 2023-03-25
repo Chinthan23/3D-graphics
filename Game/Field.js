@@ -7,7 +7,7 @@ export class Field {
 
 		this.centerX = 0.0;
 		this.centerY = 0.0;
-		this.centerZ = -2.0;
+		this.centerZ = -5.0;
 		this.radius = radius;
 		this.vertexPositions = [];
 		this.angleBetweenTwoVertices = 2 * Math.PI / this.numOfSides;

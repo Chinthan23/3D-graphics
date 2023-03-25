@@ -16,25 +16,27 @@ export class Model{
 		this.selectedColor=[0.1,0.5,0.5,0.5];
 		this.color=color;
 		this.position=initialFieldPosition;
-		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1);
-		this.transform.translateTo(0,0,0);
+		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1.5);
+		this.transform.setCenter(0,0,this.position[2]+1.5);
 		this.arrows=[new Arrow(color,initialFieldPosition)];
 		this.id=id;
 		this.light=[0,0,-1];
 		this.uID=this.getUID();
 		this.catcher=false;
+		this.move=false;
 	}
 	updatePosition(positions,id){
 		this.position=positions;
 		this.id=id;
-		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1);
+		this.transform.setEye(this.position[0],this.position[1],this.position[2]+1.5);
 		this.uID=this.getUID();
 		this.arrows.forEach(function (arrow) {
 			arrow.updatePosition(positions)
 		});
 	}
 	updateCenter(position){
-		this.transform.setCenter(position[0],position[1],position[2]+1);
+		this.transform.setCenter(position[0],position[1],position[2]+1.5);
+		console.log(this.transform.target)
 		this.arrows[0].updateCenter(position);
 	}
 	clearTranslation(){
@@ -73,6 +75,7 @@ export class Model{
 	}
 	configureCatcherMove(fieldArray,n){
 		this.catcher=true;
+		this.move=true;
 		this.destID=Math.floor(Math.random()*(n));
 		while(this.destID===this.id){
 			this.destID=Math.floor(Math.random()*(n));
@@ -83,11 +86,14 @@ export class Model{
 	}
 	clearConfiguration(){
 		if(this.catcher) this.deselect();
-		this.updateCenter([0,0,-2]);
+		this.updateCenter([0,0,-5]);
 		this.updatePosition(this.dest,this.destID);
 		this.clearTranslation();
+		this.catcher=false;
+		this.move=false;
 	}
 	configureFreeCorner(fieldArray,positionToMove){
+		this.move=true;
 		this.destID=positionToMove;
 		this.dest=fieldArray[positionToMove];
 		this.moveLength=vec3.distance(this.position,this.dest);

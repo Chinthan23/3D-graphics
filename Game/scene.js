@@ -7,7 +7,7 @@ export class Scene
 {
 	constructor(width, height,numPlayers,numSides)
 	{
-		this.field= new Field(numPlayers,numSides,5);
+		this.field= new Field(numPlayers,numSides,8);
 		this.numPlayers=numPlayers;
 		this.models = []
 		this.mode=1;
@@ -19,7 +19,7 @@ export class Scene
 		this.eyeVector=vec3.create();
 		this.eyeVector2=vec3.create();
 		vec3.set(this.eyeVector,0,0,10)
-		vec3.set(this.eyeVector2,0,-10,0)
+		vec3.set(this.eyeVector2,0,-15,0)
 
 		this.upVector=vec3.create();
 		this.upVector2=vec3.create();
@@ -51,11 +51,7 @@ export class Scene
 
 		this.modelSelected="";
 		this.modelAtDestination="";
-		this.start=-1;
-		this.startD=-1;
-		this.destD=-1;
-		this.catcherLength=-1;
-		this.playerLength=-1;
+		console.log(this);
 	}
 	getFreePositionInField(num=0){
 		let pos=Math.floor(Math.random()*this.modelPresent.length);
