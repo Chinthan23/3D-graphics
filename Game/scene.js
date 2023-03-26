@@ -48,7 +48,7 @@ export class Scene
 		mat4.invert(this.projectionMatrixInv,this.projectionMatrix);
 		
 		this.modelPresent=new Array(numSides).fill(false);
-		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
+		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj","../models-blender/Extrude/Extrude.obj","../models-blender/Random/Random.obj"]
 		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
 		
