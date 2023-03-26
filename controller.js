@@ -92,6 +92,7 @@ export class Controller{
 					let projectionValue=(a*Math.cos(theta));
 					// *(this.scene.modelSelected.moveLength/4);
 					this.scene.configureFraction(projectionValue);
+					this.scene.resetModel();
 					this.scene.movePlayers();
 				}
 			}

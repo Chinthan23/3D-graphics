@@ -149,17 +149,23 @@ export class Scene
 			this.mode= this.mode===1? 2:1;
 			this.cameraChange=true;
 		}
-		else if(event.key==='x' && typeof this.modelSelected === 'object'){
+		else if(event.key==='x' && typeof this.modelSelected === 'object'&& this.fraction===0){
 			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
 		}
-		else if(event.key==='y' && typeof this.modelSelected === 'object'){
+		else if(event.key==='y' && typeof this.modelSelected === 'object' && this.fraction===0){
 			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
 		}
-		else if(event.key==='z' && typeof this.modelSelected === 'object'){
+		else if(event.key==='z' && typeof this.modelSelected === 'object' && this.fraction===0){
 			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
 		}
 		else if(event.key==='r' && typeof this.modelSelected === 'object'){
 			this.modelSelected.reset();
+		}
+		else if(event.key==='+' && typeof this.modelSelected=== 'object' ){
+			this.modelSelected.transform.scaleBy(0.2);
+		}
+		else if(event.key==='-' && typeof this.modelSelected=== 'object' ){
+			this.modelSelected.transform.scaleBy(-0.2);
 		}
 	}
 	configurePlayers(model){
@@ -208,5 +214,8 @@ export class Scene
 	movePlayers(){
 		this.modelSelected.movePlayer(this.fraction);
 		if(this.modelAtDestination!=="") this.modelAtDestination.movePlayer(this.fraction);
+	}
+	resetModel(){
+		this.modelSelected.reset();
 	}
 }

@@ -36,7 +36,6 @@ export class Model{
 	}
 	updateCenter(position){
 		this.transform.setCenter(position[0],position[1],position[2]+1.5);
-		this.arrows[0].updateCenter(position);
 	}
 	clearTranslation(){
 		this.transform.translateTo(0,0,0);
@@ -81,7 +80,7 @@ export class Model{
 		}
 		this.dest=fieldArray[this.destID];
 		this.moveLength=vec3.distance(this.position,this.dest);
-		this.updateCenter(this.dest);
+		this.arrows[0].updateCenter(this.dest);
 	}
 	clearConfiguration(moveSuccess){
 		if(this.catcher) this.deselect();
@@ -96,9 +95,10 @@ export class Model{
 		this.destID=positionToMove;
 		this.dest=fieldArray[positionToMove];
 		this.moveLength=vec3.distance(this.position,this.dest);
-		this.updateCenter(this.dest);
+		this.arrows[0].updateCenter(this.dest);
 	}
 	movePlayer(fraction){
+		this.updateCenter(this.dest);
 		this.transform.translateTo(0,0,-this.moveLength*fraction);
 		this.arrows[0].transform.translateTo(0,0,-this.moveLength*fraction);
 	}
