@@ -12,14 +12,7 @@ const fieldConfigs={
 	m: controller.scene.field.numOfPlayers,
 	n: controller.scene.field.numOfSides
 }
-const directionConfig={
-	t: 0
-}
 const gui = new dat.GUI();
-gui.add(directionConfig, 't',0,1).step(0.01).onChange(function (value) {
-	directionConfig.t=value;
-	controller.updateT(value);
-})
 const Field= gui.addFolder('Field');
 Field.add(fieldConfigs, 'm',0,fieldConfigs.n-1 ).step(1).onChange( function (value) {
 	if(controller.guiSelect===true){
@@ -35,15 +28,15 @@ Field.add(fieldConfigs, 'n', 3, 20).step(1).onChange( function () {
 	}
 })
 Field.open();
-gui.show();
+gui.hide();
 document.addEventListener('keydown', (event) =>{
 	controller.processEvent(event);
-	// if(controller.guiSelect===true){
-	// 	gui.show();
-	// }
-	// else{
-	// 	gui.hide();
-	// }
+	if(controller.guiSelect===true){
+		gui.show();
+	}
+	else{
+		gui.hide();
+	}
 })
 document.addEventListener('mousedown', (event) => {
 	controller.processEvent(event);

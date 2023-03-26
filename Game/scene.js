@@ -1,5 +1,5 @@
 import webglObjLoader from 'https://cdn.skypack.dev/webgl-obj-loader';
-import {vec3,mat4, quat} from "../lib/threeD.js";
+import {vec3,mat4, quat,vec2} from "../lib/threeD.js";
 import {Field} from "./Field.js";
 import {Model} from "../models/Model.js";
 
@@ -37,20 +37,25 @@ export class Scene
 		mat4.lookAt(this.localViewMatrix,this.eyeVector,this.centerVector,this.upVector);
 		mat4.lookAt(this.globalViewMatrix,this.eyeVector2,this.centerVector2,this.upVector2);
 		this.viewMatrix=mat4.create();
+		this.viewMatrixInv=mat4.create();
 
 		this.rotationQuaternion=quat.create();
 		this.near=1e-4;
 		this.far=1e10;
 		this.projectionMatrix=mat4.create();
+		this.projectionMatrixInv=mat4.create();
 		mat4.perspective(this.projectionMatrix,75*Math.PI/180,width/height,this.near,this.far);
+		mat4.invert(this.projectionMatrixInv,this.projectionMatrix);
 		
 		this.modelPresent=new Array(numSides).fill(false);
 		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj"]
 		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
-
+		
 		this.modelSelected="";
 		this.modelAtDestination="";
+		this.moveDirection=vec2.create();
+		this.fraction=0;
 		console.log(this);
 	}
 	getFreePositionInField(num=0){
@@ -169,20 +174,39 @@ export class Scene
 				}
 			}
 		}
+		vec3.subtract(this.moveDirection,this.modelSelected.dest,this.modelSelected.position);
 	}
 	clearPlayerConfigurations(){
-		this.modelPresent[this.modelSelected.id]=false;
-		this.modelPresent[this.modelSelected.destID]=true;
-		this.modelSelected.clearConfiguration();
-		if(this.modelAtDestination!==""){
-			this.modelAtDestination.clearConfiguration();
-			this.modelPresent[this.modelAtDestination.destID]=true;
+		if(this.fraction>=0.5){
+			this.modelPresent[this.modelSelected.id]=false;
+			this.modelPresent[this.modelSelected.destID]=true;
+			this.modelSelected.clearConfiguration(true);
+			if(this.modelAtDestination!==""){
+				this.modelAtDestination.clearConfiguration(true);
+				this.modelPresent[this.modelAtDestination.destID]=true;
+			}
+			this.modelSelected="";
+			this.modelAtDestination="";
 		}
-		this.modelSelected="";
-		this.modelAtDestination="";
+		else{
+			this.modelSelected.clearConfiguration(false);
+			if(this.modelAtDestination!==""){
+				this.modelAtDestination.clearConfiguration(false);
+			}
+			this.modelSelected="";
+			this.modelAtDestination="";
+		}
+		this.fraction=0;
 	}
-	movePlayers(fraction){
-		this.modelSelected.movePlayer(fraction);
-		if(this.modelAtDestination!=="") this.modelAtDestination.movePlayer(fraction);
+	configureFraction(projectionValue){
+		let fraction=projectionValue/this.modelSelected.moveLength;
+		fraction=fraction>1?1:fraction;
+		this.fraction=fraction>this.fraction?fraction:this.fraction+fraction;
+		this.fraction=this.fraction<0?0:this.fraction;
+		this.fraction=this.fraction>1?1:this.fraction;
+	}
+	movePlayers(){
+		this.modelSelected.movePlayer(this.fraction);
+		if(this.modelAtDestination!=="") this.modelAtDestination.movePlayer(this.fraction);
 	}
 }

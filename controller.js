@@ -1,4 +1,4 @@
-import { WebGLRenderer, Shader, mat4, vec2,quat } from './lib/threeD.js';
+import { WebGLRenderer, Shader, mat4, vec2, vec4,quat, vec3 } from './lib/threeD.js';
 import {vertexShaderSrc} from './shaders/vertex.js';
 import {fragmentShaderSrc} from './shaders/fragment.js';
 import {fragmentPickerShaderSrc} from './shaders/fragemntPicker.js'
@@ -17,6 +17,7 @@ export class Controller{
 		this.move=false;
 		this.guiSelect=false;
 		this.play=false;
+		this.playerMove=false;
 		
 		this.trackballSpehereRadiusOg=1;
 		this.trackballSpehereRadius=1;
@@ -30,12 +31,6 @@ export class Controller{
 		this.moveMouse=vec2.create(); // final mouse coordinates
 		vec2.set(this.moveMouse,0,0);
 	}
-	updateT(val){
-		console.log(val);
-		if(this.scene.modelSelected.id>=0){
-			this.scene.movePlayers(val);
-		}
-	}
 	processEvent(event){
 		if(event.type==='keydown'){
 			if(event.key==='m' || event.key==='M'){
@@ -44,11 +39,19 @@ export class Controller{
 			this.scene.processEvent(event);
 		}
 		else if (event.type==='mousedown'){
-			if(this.guiSelect===false && this.scene.mode===2){
+			if(this.guiSelect===false && this.scene.mode===2 && this.play===false){
 				this.move=true;
 				vec2.set(this.mouse,event.x,event.y);
 				vec2.set(this.moveMouse,event.x,event.y);
 				this.initialMouseCoordinates=this.projectToSphere(this.mouse);
+			}
+			if(this.guiSelect===false && this.play===true){
+				this.playerMove=true;
+				let normalizedMouseX=(2*event.x - this.screenWidth)/this.screenWidth;
+				let normalizedMouseY=(this.screenHeight- 2*event.y)/this.screenHeight;
+				this.playerStart=[normalizedMouseX,normalizedMouseY];
+				this.playerEnd=[normalizedMouseX,normalizedMouseY];
+				this.mouseDirection=[this.playerEnd[0]-this.playerStart[0],this.playerEnd[1]-this.playerStart[1]];
 			}
 			if(this.guiSelect===false){
 				this.shaderPicker.use();
@@ -61,28 +64,51 @@ export class Controller{
 						if(model.id===object[0]){
 							model.select();
 							this.scene.configurePlayers(model);
+							this.play=true;
 							break;
 						}
 					}
 				}
-				else if(this.scene.modelSelected.id===object[0]) this.scene.clearPlayerConfigurations();
+				else if(this.scene.modelSelected.id===object[0] && this.play===true){
+					this.scene.clearPlayerConfigurations();
+					this.play=false;
+					this.playerMove=false;
 				}
-			else if(this.modelSelected.id!==-1 ){
-				console.log(t);
 			}
 		}
 		else if (event.type==='mousemove' ){
-			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
+			if(this.move===true && this.guiSelect===false && this.scene.mode===2 && this.play===false){
 				vec2.set(this.moveMouse,event.x,event.y);
 				this.rotateCamera3D();
 			}
+			else if(this.guiSelect===false && this.playerMove===true){
+				let normalizedMouseX=(2*event.x - this.screenWidth)/this.screenWidth;
+				let normalizedMouseY=(this.screenHeight- 2*event.y)/this.screenHeight;
+				this.playerEnd=[normalizedMouseX,normalizedMouseY];
+				this.mouseDirection=[this.playerEnd[0]-this.playerStart[0],this.playerEnd[1]-this.playerStart[1]];
+				let a=vec2.len(this.mouseDirection);
+				let theta=vec2.angle(this.mouseDirection,this.scene.moveDirection);
+				if((theta <Math.PI/6)||(theta> 5*(Math.PI/6))){
+					let projectionValue=(a*Math.cos(theta));
+					// *(this.scene.modelSelected.moveLength/4);
+					this.scene.configureFraction(projectionValue);
+					this.scene.movePlayers();
+				}
+			}
 		}
 		else if(event.type==='mouseup'){
-			if(this.move===true && this.guiSelect===false && this.scene.mode===2){
+			if(this.move===true && this.guiSelect===false && this.scene.mode===2 && this.play===false){
 				vec2.set(this.mouse,event.x,event.y)
 				vec2.set(this.moveMouse,event.x,event.y)
 				this.scene.setQuatIdentity();
 				this.move=false;
+			}
+			else if(this.guiSelect===false && this.play===true && this.playerMove===true){
+				this.playerMove=false;
+				let normalizedMouseX=(2*event.x - this.screenWidth)/this.screenWidth;
+				let normalizedMouseY=(this.screenHeight- 2*event.y)/this.screenHeight;
+				this.playerStart=[normalizedMouseX,normalizedMouseY];
+				this.playerEnd=[normalizedMouseX,normalizedMouseY];
 			}
 		}
 		else if(event.type==='wheel'){
@@ -96,6 +122,14 @@ export class Controller{
 			}
 		}
 	}
+	// convertToWorldCoordinates(num){
+	// 	let mouse=num===1?this.playerStart:this.playerEnd;
+	// 	let normalisedScreen=vec4.create();
+	// 	let normalisedClip=vec4.create();
+	// 	let world=vec4.create();
+	// 	vec4.set(normalisedScreen,mouse[0],mouse[1],0.0,1.0);
+	// 	console.log(this.scene.projectionMatrix,this.scene.projectionMatrixInv)
+	// }
 	projectToSphere(mouse){
 		let normalizedMouseX=(2*mouse[0] - this.screenWidth)/this.screenWidth;
 		let normalizedMouseY=(this.screenHeight- 2*mouse[1])/this.screenHeight;

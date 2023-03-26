@@ -36,7 +36,6 @@ export class Model{
 	}
 	updateCenter(position){
 		this.transform.setCenter(position[0],position[1],position[2]+1.5);
-		console.log(this.transform.target)
 		this.arrows[0].updateCenter(position);
 	}
 	clearTranslation(){
@@ -84,10 +83,10 @@ export class Model{
 		this.moveLength=vec3.distance(this.position,this.dest);
 		this.updateCenter(this.dest);
 	}
-	clearConfiguration(){
+	clearConfiguration(moveSuccess){
 		if(this.catcher) this.deselect();
 		this.updateCenter([0,0,-5]);
-		this.updatePosition(this.dest,this.destID);
+		if(moveSuccess) this.updatePosition(this.dest,this.destID);
 		this.clearTranslation();
 		this.catcher=false;
 		this.move=false;
