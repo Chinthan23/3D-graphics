@@ -47,6 +47,9 @@ document.addEventListener('mousemove', (event) => {
 document.addEventListener('mouseup', (event) => {
 	controller.processEvent(event);
 })
+document.addEventListener('click', (event) => {
+	controller.processEvent(event);
+})
 document.addEventListener('wheel', (event)=> {
 	event.preventDefault();
 	controller.processEvent(event);

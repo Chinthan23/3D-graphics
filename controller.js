@@ -33,7 +33,7 @@ export class Controller{
 	}
 	processEvent(event){
 		if(event.type==='keydown'){
-			if(event.key==='m' || event.key==='M'){
+			if((event.key==='m' || event.key==='M') && this.play===false){
 				this.guiSelect=!this.guiSelect;
 			}
 			this.scene.processEvent(event);
@@ -52,28 +52,6 @@ export class Controller{
 				this.playerStart=[normalizedMouseX,normalizedMouseY];
 				this.playerEnd=[normalizedMouseX,normalizedMouseY];
 				this.mouseDirection=[this.playerEnd[0]-this.playerStart[0],this.playerEnd[1]-this.playerStart[1]];
-			}
-			if(this.guiSelect===false){
-				this.shaderPicker.use();
-				this.renderer.clear(0.1, 0.1, 0.1, 1);
-				this.renderer.render(this.scene,this.shaderPicker);
-				this.shader.use();
-				let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
-				if(this.scene.modelSelected.id=== undefined && object[0]!==200){
-					for(let model of this.scene.models){
-						if(model.id===object[0]){
-							model.select();
-							this.scene.configurePlayers(model);
-							this.play=true;
-							break;
-						}
-					}
-				}
-				else if(this.scene.modelSelected.id===object[0] && this.play===true){
-					this.scene.clearPlayerConfigurations();
-					this.play=false;
-					this.playerMove=false;
-				}
 			}
 		}
 		else if (event.type==='mousemove' ){
@@ -122,15 +100,31 @@ export class Controller{
 				this.scene.scaleBy(this.zoom);
 			}
 		}
+		else if(event.type==='click'){
+			if(this.guiSelect===false){
+				this.shaderPicker.use();
+				this.renderer.clear(0.1, 0.1, 0.1, 1);
+				this.renderer.render(this.scene,this.shaderPicker);
+				this.shader.use();
+				let object=this.shaderPicker.readPixel(event.x,this.screenHeight-event.y-1);
+				if(this.scene.modelSelected.id=== undefined && object[0]!==200){
+					for(let model of this.scene.models){
+						if(model.id===object[0]){
+							model.select();
+							this.scene.configurePlayers(model);
+							this.play=true;
+							break;
+						}
+					}
+				}
+				else if(this.scene.modelSelected.id===object[0] && this.play===true){
+					this.scene.clearPlayerConfigurations();
+					this.play=false;
+					this.playerMove=false;
+				}
+			}
+		}
 	}
-	// convertToWorldCoordinates(num){
-	// 	let mouse=num===1?this.playerStart:this.playerEnd;
-	// 	let normalisedScreen=vec4.create();
-	// 	let normalisedClip=vec4.create();
-	// 	let world=vec4.create();
-	// 	vec4.set(normalisedScreen,mouse[0],mouse[1],0.0,1.0);
-	// 	console.log(this.scene.projectionMatrix,this.scene.projectionMatrixInv)
-	// }
 	projectToSphere(mouse){
 		let normalizedMouseX=(2*mouse[0] - this.screenWidth)/this.screenWidth;
 		let normalizedMouseY=(this.screenHeight- 2*mouse[1])/this.screenHeight;

@@ -161,10 +161,10 @@ export class Scene
 		else if(event.key==='r' && typeof this.modelSelected === 'object'){
 			this.modelSelected.reset();
 		}
-		else if(event.key==='+' && typeof this.modelSelected=== 'object' ){
+		else if(event.key==='ArrowUp' && typeof this.modelSelected=== 'object' ){
 			this.modelSelected.transform.scaleBy(0.2);
 		}
-		else if(event.key==='-' && typeof this.modelSelected=== 'object' ){
+		else if(event.key==='ArrowDown' && typeof this.modelSelected=== 'object' ){
 			this.modelSelected.transform.scaleBy(-0.2);
 		}
 	}
