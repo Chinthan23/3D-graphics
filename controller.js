@@ -36,7 +36,27 @@ export class Controller{
 			if((event.key==='m' || event.key==='M') && this.play===false){
 				this.guiSelect=!this.guiSelect;
 			}
-			this.scene.processEvent(event);
+			else if(event.key === 'c'){
+				this.scene.mode= this.scene.mode===1? 2:1;
+			}
+			else if(event.key==='x' && typeof this.scene.modelSelected === 'object'&& this.scene.fraction===0){
+				this.scene.modelSelected.transform.rotX(this.scene.modelSelected.transform.angleX+(10*Math.PI/180));
+			}
+			else if(event.key==='y' && typeof this.scene.modelSelected === 'object' && this.scene.fraction===0){
+				this.scene.modelSelected.transform.rotY(this.scene.modelSelected.transform.angleY+(10*Math.PI/180));
+			}
+			else if(event.key==='z' && typeof this.scene.modelSelected === 'object' && this.scene.fraction===0){
+				this.scene.modelSelected.transform.rotZ(this.scene.modelSelected.transform.angleZ+(10*Math.PI/180));
+			}
+			else if(event.key==='r' && typeof this.scene.modelSelected === 'object'){
+				this.scene.modelSelected.reset();
+			}
+			else if(event.key==='ArrowUp' && typeof this.scene.modelSelected=== 'object' ){
+				this.scene.modelSelected.transform.scaleBy(0.2);
+			}
+			else if(event.key==='ArrowDown' && typeof this.scene.modelSelected=== 'object' ){
+				this.scene.modelSelected.transform.scaleBy(-0.2);
+			}
 		}
 		else if (event.type==='mousedown'){
 			if(this.guiSelect===false && this.scene.mode===2 && this.play===false){

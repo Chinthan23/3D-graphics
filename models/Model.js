@@ -87,6 +87,7 @@ export class Model{
 		this.updateCenter([0,0,-5]);
 		if(moveSuccess) this.updatePosition(this.dest,this.destID);
 		this.clearTranslation();
+		this.reset();
 		this.catcher=false;
 		this.move=false;
 	}

@@ -11,7 +11,6 @@ export class Scene
 		this.numPlayers=numPlayers;
 		this.models = []
 		this.mode=1;
-		this.cameraChange=false;
 
 		this.zoom=vec3.create();
 		vec3.set(this.zoom,1,1,1);
@@ -142,31 +141,6 @@ export class Scene
 	}
 	setQuatIdentity(){
 		quat.identity(this.rotationQuaternion);
-	}
-	processEvent(event){
-		console.log(event);
-		if(event.key === 'c'){
-			this.mode= this.mode===1? 2:1;
-			this.cameraChange=true;
-		}
-		else if(event.key==='x' && typeof this.modelSelected === 'object'&& this.fraction===0){
-			this.modelSelected.transform.rotX(this.modelSelected.transform.angleX+(10*Math.PI/180));
-		}
-		else if(event.key==='y' && typeof this.modelSelected === 'object' && this.fraction===0){
-			this.modelSelected.transform.rotY(this.modelSelected.transform.angleY+(10*Math.PI/180));
-		}
-		else if(event.key==='z' && typeof this.modelSelected === 'object' && this.fraction===0){
-			this.modelSelected.transform.rotZ(this.modelSelected.transform.angleZ+(10*Math.PI/180));
-		}
-		else if(event.key==='r' && typeof this.modelSelected === 'object'){
-			this.modelSelected.reset();
-		}
-		else if(event.key==='ArrowUp' && typeof this.modelSelected=== 'object' ){
-			this.modelSelected.transform.scaleBy(0.2);
-		}
-		else if(event.key==='ArrowDown' && typeof this.modelSelected=== 'object' ){
-			this.modelSelected.transform.scaleBy(-0.2);
-		}
 	}
 	configurePlayers(model){
 		this.modelSelected=model;
