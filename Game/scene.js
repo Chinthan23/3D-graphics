@@ -48,7 +48,7 @@ export class Scene
 		mat4.invert(this.projectionMatrixInv,this.projectionMatrix);
 		
 		this.modelPresent=new Array(numSides).fill(false);
-		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj","../models-blender/Extrude/Extrude.obj","../models-blender/Random/Random.obj"]
+		this.modelPathname=["../models-blender/Sculpt/Sculpt.obj","../models-blender/Intersection/Intersection.obj","../models-blender/CutExtrude/CutExtrude.obj","../models-blender/Extrude/Extrude.obj"]//,"../models-blender/Random/Random.obj"]
 		this.modelText=new Array(this.modelPathname.length);
 		this.loadAllModels();
 		
@@ -69,7 +69,7 @@ export class Scene
 	initialiseField(){
 		for(let i=0;i<this.numPlayers;i++){
 			let pos=this.getFreePositionInField();
-			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
+			this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*this.modelText.length)],this.field.vertexPosition[pos],pos));
 		}
 	}
 	setNumOfSides(n){
@@ -96,7 +96,7 @@ export class Scene
 			let excess=m-this.numPlayers;
 			for(let i=0;i<excess;i++){
 				let pos=this.getFreePositionInField();
-				this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*3)],this.field.vertexPosition[pos],pos));
+				this.add(new Model([Math.random(),Math.random(),Math.random(),1],this.modelText[Math.floor(Math.random()*this.modelText.length)],this.field.vertexPosition[pos],pos));
 			}
 		}
 		this.numPlayers=m;
